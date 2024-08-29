@@ -1,0 +1,41 @@
+DIGEST d11363aec0cabd354213e4cb52952814
+Fcoq
+def 9:12 <> fact
+R17:19 Coq.Init.Datatypes <> nat ind
+binder 15:15 <> n:1
+R31:31 coq <> n:1 var
+R49:49 Coq.Init.Datatypes <> S constr
+R57:60 Coq.Init.Peano <> ::nat_scope:x_'*'_x not
+R67:67 Coq.Init.Peano <> ::nat_scope:x_'*'_x not
+R56:56 coq <> n:1 var
+R61:64 coq <> fact:2 def
+def 84:94 <> fact_tr_acc
+R99:101 Coq.Init.Datatypes <> nat ind
+binder 97:97 <> n:4
+R109:111 Coq.Init.Datatypes <> nat ind
+binder 105:107 <> acc:5
+R123:123 coq <> n:4 var
+R137:139 coq <> acc:5 var
+R143:143 Coq.Init.Datatypes <> S constr
+R150:160 coq <> fact_tr_acc:6 def
+R166:166 Coq.Init.Peano <> ::nat_scope:x_'*'_x not
+R165:165 coq <> n:4 var
+R167:169 coq <> acc:5 var
+def 189:195 <> fact_tr
+R200:202 Coq.Init.Datatypes <> nat ind
+binder 198:198 <> n:8
+R208:218 coq <> fact_tr_acc def
+R220:220 coq <> n:8 var
+prf 232:237 <> helper
+R256:258 Coq.Init.Datatypes <> nat ind
+binder 249:249 <> n:9
+binder 251:253 <> acc:10
+R279:281 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R262:272 coq <> fact_tr_acc def
+R274:274 coq <> n:9 var
+R276:278 coq <> acc:10 var
+R282:282 Coq.Init.Peano <> ::nat_scope:x_'*'_x not
+R289:293 Coq.Init.Peano <> ::nat_scope:x_'*'_x not
+R283:286 coq <> fact def
+R288:288 coq <> n:9 var
+R294:296 coq <> acc:10 var

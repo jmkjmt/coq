@@ -1,0 +1,58 @@
+DIGEST 6403708bb1d60fe4928aba4c302d9f0f
+Fnat
+ind 10:16 <> natural
+constr 29:32 <> ZERO
+constr 46:49 <> SUCC
+R36:42 nat <> natural:1 ind
+R60:63 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R53:59 nat <> natural:1 ind
+R64:70 nat <> natural:1 ind
+scheme 10:16 <> natural_rect
+scheme 10:16 <> natural_ind
+scheme 10:16 <> natural_rec
+scheme 10:16 <> natural_sind
+def 83:89 <> natadd1
+R100:106 nat <> natural ind
+binder 92:93 <> n1:3
+binder 95:96 <> n2:4
+R111:117 nat <> natural ind
+R130:131 nat <> n1:3 var
+R141:144 nat <> ZERO constr
+R149:150 nat <> n2:4 var
+R156:159 nat <> SUCC constr
+R166:169 nat <> SUCC constr
+R172:178 nat <> natadd1:5 def
+R182:183 nat <> n2:4 var
+def 203:208 <> oneadd
+R216:222 nat <> natural ind
+binder 211:212 <> n1:7
+R227:233 nat <> natural ind
+R246:247 nat <> n1:7 var
+R257:260 nat <> ZERO constr
+R265:268 nat <> ZERO constr
+R274:277 nat <> SUCC constr
+R286:289 nat <> SUCC constr
+R292:297 nat <> oneadd:8 def
+def 319:325 <> natadd2
+R336:342 nat <> natural ind
+binder 328:329 <> n1:10
+binder 331:332 <> n2:11
+R347:353 nat <> natural ind
+R366:367 nat <> n1:10 var
+R378:381 nat <> ZERO constr
+R386:391 nat <> oneadd def
+R393:394 nat <> n2:11 var
+R400:403 nat <> SUCC constr
+R410:416 nat <> natadd2:12 def
+R421:424 nat <> SUCC constr
+R426:427 nat <> n2:11 var
+prf 446:457 <> natadd_equiv
+binder 468:469 <> n1:14
+binder 471:472 <> n2:15
+R488:490 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R475:481 nat <> natadd1 def
+R483:484 nat <> n1:14 var
+R486:487 nat <> n2:15 var
+R491:497 nat <> natadd2 def
+R499:500 nat <> n1:14 var
+R502:503 nat <> n2:15 var

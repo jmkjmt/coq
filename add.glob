@@ -1,0 +1,24 @@
+DIGEST fe74ed58842d80f2ff051866523f3a61
+Fadd
+R15:19 Coq.Arith.Arith <> <> lib
+ax 70:70 <> f
+R77:80 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R74:76 Coq.Init.Datatypes <> nat ind
+R81:83 Coq.Init.Datatypes <> nat ind
+def 120:123 <> add1
+R132:134 Coq.Init.Datatypes <> nat ind
+binder 126:126 <> a:2
+binder 128:128 <> b:3
+R139:141 Coq.Init.Datatypes <> nat ind
+R155:159 Coq.Arith.PeanoNat <> ::nat_scope:x_'<=?'_x not
+R154:154 add <> a:2 var
+R160:160 add <> b:3 var
+R171:174 Coq.Init.Datatypes <> true constr
+R182:184 Coq.Init.Peano <> ::nat_scope:x_'+'_x not
+R179:179 add <> f defax
+R181:181 add <> a:2 var
+R185:188 add <> add1:4 def
+R198:198 add <> b:3 var
+R192:194 Coq.Init.Peano <> ::nat_scope:x_'+'_x not
+R191:191 add <> a:2 var
+R204:208 Coq.Init.Datatypes <> false constr

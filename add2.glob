@@ -1,0 +1,60 @@
+DIGEST 0083218cc9cc46860e6db06300b35f94
+Fadd2
+R15:19 Coq.Arith.Arith <> <> lib
+R37:42 Coq.funind.Recdef <> <> lib
+ax 93:93 <> f
+R100:103 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R97:99 Coq.Init.Datatypes <> nat ind
+R104:106 Coq.Init.Datatypes <> nat ind
+R155:157 Coq.Init.Datatypes <> nat ind
+binder 149:149 <> a:2
+binder 151:151 <> b:3
+R191:193 Coq.Init.Datatypes <> nat ind
+R207:211 Coq.Arith.PeanoNat <> ::nat_scope:x_'<=?'_x not
+R206:206 add2 <> a:2 var
+R212:212 add2 <> b:3 var
+R223:226 Coq.Init.Datatypes <> true constr
+R234:236 Coq.Init.Peano <> ::nat_scope:x_'+'_x not
+R231:231 add2 <> f defax
+R233:233 add2 <> a:2 var
+R237:240 add2 <> add1:4 def
+R250:250 add2 <> b:3 var
+R244:246 Coq.Init.Peano <> ::nat_scope:x_'+'_x not
+R243:243 add2 <> a:2 var
+R256:260 Coq.Init.Datatypes <> false constr
+binder 149:149 <> a:5
+binder 151:151 <> b:6
+binder 149:149 <> a:7
+binder 151:151 <> b:8
+binder 149:149 <> a:10
+binder 151:151 <> b:11
+R207:211 Coq.Arith.PeanoNat <> ::nat_scope:x_'<=?'_x not
+R206:206 add2 <> a:10 var
+R212:212 add2 <> b:11 var
+R223:226 Coq.Init.Datatypes <> true constr
+R234:236 Coq.Init.Peano <> ::nat_scope:x_'+'_x not
+R231:231 add2 <> f defax
+R233:233 add2 <> a:10 var
+R237:240 add2 <> add1:9 def
+R250:250 add2 <> b:11 var
+R244:246 Coq.Init.Peano <> ::nat_scope:x_'+'_x not
+R243:243 add2 <> a:10 var
+R256:260 Coq.Init.Datatypes <> false constr
+binder 149:149 <> a:12
+binder 151:151 <> b:13
+binder 149:149 <> a:14
+binder 151:151 <> b:15
+R207:211 Coq.Arith.PeanoNat <> ::nat_scope:x_'<=?'_x not
+R206:206 add2 <> a:14 var
+R212:212 add2 <> b:15 var
+R223:226 Coq.Init.Datatypes <> true constr
+R234:236 Coq.Init.Peano <> ::nat_scope:x_'+'_x not
+R231:231 add2 <> f defax
+R233:233 add2 <> a:14 var
+R237:240 add2 <> add1:9 def
+R250:250 add2 <> b:15 var
+R244:246 Coq.Init.Peano <> ::nat_scope:x_'+'_x not
+R243:243 add2 <> a:14 var
+R256:260 Coq.Init.Datatypes <> false constr
+binder 174:174 <> x:17
+R180:182 Coq.Init.Peano <> ::nat_scope:x_'-'_x not
