@@ -14,6 +14,7 @@ Inductive lambda : Type :=
 | P : var * lambda -> lambda
 | C : lambda * lambda -> lambda.
 
+
 Fixpoint is_mem (variables: list var) (var:var) : bool :=
 match variables with
 | [] => false
@@ -53,14 +54,14 @@ end.
 
   
   
-Theorem eq: forall lambda, check_sub lambda = check_ref lambda.
+Theorem eq: forall l: lambda, check_sub l = check_ref l.
 Proof.
-  intros.
-  induction lambda0.
-  reflexivity.
-  unfold check_sub.
-  simpl.
-  simpl.
+  
+  
+
+  
+
+
 
   
   
