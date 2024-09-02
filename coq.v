@@ -1,6 +1,7 @@
 Require Import Arith.
 Require Import Lia.
 Require Import Bool.
+Require Import List.
 Lemma example2 : forall a b: Prop, a /\ b ->  b /\ a.
 Proof.
     intros a b H.
@@ -232,16 +233,155 @@ Proof.
     reflexivity.
     Qed.
 
+Fixpoint count n l :=
+match l with
+| nil => 0
+| a::tl => let r := count n tl in if n =? a then 1+r else r
+end.
+Fixpoint insert n l :=
+match l with
+nil => n :: nil
+| a::tl => if n <=? a then n ::l else a :: insert n tl
+end.
+
+Fixpoint sort l :=
+match l with
+nil => nil
+| a::tl => insert a (sort tl)
+end.
+Lemma insert_incr : forall n l, count n (insert n l) = 1 + count n l.
+Proof.
+    intros n l.
+    induction l.
+    simpl.
+    rewrite Nat.eqb_refl.
+    reflexivity.
+    simpl.
+    case (n <=? a).
+    simpl.
+    rewrite Nat.eqb_refl.
+    reflexivity.
+    simpl.
+    case (n =? a).
+    rewrite IHl.
+    reflexivity.
+    rewrite IHl.
+    reflexivity.
+    Qed.
+
+Inductive bin : Type :=
+| L : bin
+| N : bin -> bin -> bin.
+
+Definition e7 (t : bin) : bool :=
+match t with 
+N L L => false
+| _ => true end.
+
+Fixpoint size (t: bin) : nat :=
+match t with
+| L => 1
+| N t1 t2 => 1 + size t1 + size t2
+end.
+
+Fixpoint flatten_aux (t1 t2:bin) : bin :=
+match t1 with
+| L => N L t2
+| N t'1 t'2 => flatten_aux t'1 (flatten_aux t'2 t2)
+end.
+
+Fixpoint flatten (t:bin) : bin :=
+match t with
+| L => L
+| N t1 t2 => flatten_aux t1 (flatten t2)
+end.
+Lemma e7_size : forall t, e7 t = false -> size t = 3.
+Proof.
+    intros.
+    destruct t.
+    simpl.
+    discriminate.
+    destruct t1.
+    destruct t2.
+    simpl.
+    reflexivity.
+    simpl.
+    discriminate.
+    simpl.
+    discriminate.
+    Qed.
+
+Lemma flatten_aux_size : forall t1 t2, size (flatten_aux t1 t2) = size t1 + size t2 + 1.
+Proof.
+    induction t1.
+    intros t2.
+    simpl.
+    ring.
+    simpl.
+    intros t2.
+    rewrite IHt1_1.
+    rewrite IHt1_2.
+    ring.
+    Qed.
+
+Lemma flatten_size : forall t, size (flatten t) = size t.
+Proof.
+    intros.
+    induction t.
+    simpl.
+    reflexivity.
+    simpl.
+    induction t1.
+    simpl.
+    rewrite IHt2.
+    reflexivity.
+    simpl.
+    rewrite flatten_aux_size.
+    rewrite flatten_aux_size.
+    rewrite IHt2.
+    ring.
+    Qed.
+
+Lemma not_subterm_self_l : forall x y, ~x = N x y.
+Proof.
+    induction x.
+    discriminate.
+    intros y abs.
+    injection abs.
+    intros h1 h2.
+    assert (IHx1' : x1 <> N x1 x2).
+    apply IHx1.
+    case IHx1'.
+    exact h2.
+    Qed.
+Inductive even : nat -> Prop :=
+even0 : even 0
+|evenS : forall x:nat, even x -> even (S (S x)).
 
 
 
 
+Lemma even_mult : forall x, even x -> exists y, x = 2 *y.
+Proof.
+    intros x H.
+    induction H.
+    exists 0.
+    reflexivity.
+    destruct IHeven as [y Heq].
+    rewrite Heq.
+    exists (y+1).
+    ring.
+    Qed.
 
-    
-    
-    
-    
-    
-    
+Lemma not_even_1: ~even 1.
+Proof.
+    intros even1.
+    inversion even1.
+    Qed.
 
-    
+Lemma even_inv : forall x, even (S (S x)) -> even x.
+Proof.
+    intros x H.
+    inversion H.
+    apply H1.
+    Qed.
