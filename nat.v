@@ -20,6 +20,12 @@ Fixpoint natadd2 (n1 n2 : natural) : natural :=
   | SUCC n => natadd2 n (SUCC n2)
   end.
 
+Fixpoint natadd3 (n1 n2 : natural) : natural :=
+  match n2 with
+  | ZERO => n1
+  | SUCC n => SUCC (natadd3 n1 n)
+  end.
+
 Lemma first : forall n: natural, n = oneadd n.
 Proof.
   induction n.
@@ -32,6 +38,7 @@ Proof.
 Lemma second: forall n1 n2, SUCC (natadd2 n1 n2) = natadd2 n1 (SUCC n2).
 Proof.
   induction n1.
+  simpl.
   reflexivity.
   simpl.
   intros n2.
@@ -50,6 +57,30 @@ Proof.
   Qed.
 
   
+Theorem eq2: forall n1 n2, natadd1 n1 n2 = natadd3 n1 n2.
+Proof.
+  induction n1.
+  simpl.
+  induction n2.
+  simpl.
+  reflexivity.
+  simpl.
+  rewrite <- IHn2.
+  reflexivity.
+  induction n2.
+  simpl.
+  rewrite IHn1.
+  simpl.
+  reflexivity.
+  simpl.
+  rewrite <- IHn2.
+  simpl.
+  rewrite IHn1.
+  rewrite IHn1.
+  simpl.
+  reflexivity.
+  Qed.
+
 
 (* Lemma example2 : forall a b:Prop, a /\ b -> b /\ a.
 
