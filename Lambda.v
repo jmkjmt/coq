@@ -11,9 +11,13 @@ Print String.eqb.
 Definition var := string.
 Inductive lambda : Type :=
 | V : var -> lambda
-| P : var * lambda -> lambda
-| C : lambda * lambda -> lambda.
+| P : var -> lambda -> lambda
+| C : lambda -> lambda -> lambda.
 
+Check lambda_sind.
+Check lambda_rect.
+Check lambda_ind.
+Check lambda_rec.
 
 Fixpoint is_mem (variables: list var) (var:var) : bool :=
 match variables with
@@ -24,8 +28,8 @@ end.
 Fixpoint sub_check (lambda:lambda) (vars: list var) : bool :=
 match lambda with
 | V x => is_mem vars x
-| P (x, e) => sub_check e (x::vars)
-| C (e1, e2) => (sub_check e1 vars) && (sub_check e2 vars)
+| P x e => sub_check e (x::vars)
+| C e1 e2 => (sub_check e1 vars) && (sub_check e2 vars)
 end.
 
 Definition check_ref (lambda:lambda) : bool := sub_check lambda [].
@@ -41,8 +45,8 @@ Fixpoint checkStation (m :var) (lst: list var) : list var :=
 Fixpoint isInArea (met:lambda) (lst: list var) : list var :=
 match met with
 | V var => var::lst
-| P (var, mtro) => checkStation var (isInArea mtro lst)
-| C (met1, met2) => (isInArea met1 lst) ++ (isInArea met2 lst)
+| P var mtro => checkStation var (isInArea mtro lst)
+| C met1 met2 => (isInArea met1 lst) ++ (isInArea met2 lst)
 end.
 
 Definition check_sub (lambda: lambda) : bool := 
@@ -56,6 +60,8 @@ end.
   
 Theorem eq: forall l: lambda, check_sub l = check_ref l.
 Proof.
+  induction l.
+
   
   
 
