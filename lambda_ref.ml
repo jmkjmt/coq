@@ -20,3 +20,6 @@ let rec sub_check : lambda -> var list -> bool
 let rec check : lambda -> bool
 = fun lambda ->
   sub_check lambda []
+
+let () = 
+check (P ("v", (C (V "v", V "v")))) |> string_of_bool |> print_endline

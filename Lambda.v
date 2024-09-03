@@ -7,7 +7,7 @@ Import ListNotations.
 Open Scope string_scope.
 Open Scope list_scope.
 Module Export StringSyntax. End StringSyntax.
-Print String.eqb.
+
 Definition var := string.
 Inductive lambda : Type :=
 | V : var -> lambda
@@ -34,44 +34,32 @@ end.
 
 Definition check_ref (lambda:lambda) : bool := sub_check lambda [].
 
-Fixpoint checkStation (m :var) (lst: list var) : list var :=
-  match lst with
+Fixpoint checkStation (v :var) (variables: list var) : list var :=
+  match variables with
   | [] => []
   | hd::tl =>
-      if hd =? m then checkStation m tl
-      else hd :: checkStation m tl
+      if hd =? v then checkStation v tl
+      else hd :: checkStation v tl
   end.
 
-Fixpoint isInArea (met:lambda) (lst: list var) : list var :=
-match met with
-| V var => var::lst
-| P var mtro => checkStation var (isInArea mtro lst)
-| C met1 met2 => (isInArea met1 lst) ++ (isInArea met2 lst)
+Fixpoint isInArea (lambda:lambda) (vars: list var) : list var :=
+match lambda with
+| V x => x::vars
+| P x e => checkStation x (isInArea e vars)
+| C e1 e2 => (isInArea e1 vars) ++ (isInArea e2 vars)
 end.
 
-Definition check_sub (lambda: lambda) : bool := 
+Definition check_sub (lambda:lambda) : bool :=
 let result := (isInArea lambda []) in
 match result with
 | [] => true
 | hd::tl => false
 end.
 
-  
-  
-Theorem eq: forall l: lambda, check_sub l = check_ref l.
+
+
+Theorem eq: forall l: lambda, check_ref l = check_sub l.
 Proof.
-  induction l.
-
-  
   
 
-  
-
-
-
-  
-  
-  
-  
-  
 
