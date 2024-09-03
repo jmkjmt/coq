@@ -354,11 +354,14 @@ Proof.
     case IHx1'.
     exact h2.
     Qed.
+
 Inductive even : nat -> Prop :=
 even0 : even 0
 |evenS : forall x:nat, even x -> even (S (S x)).
 
-
+Inductive even2 : nat -> Prop :=
+even02 : even2 10
+|even2S : forall x: nat, even2 x -> even2 (S (S x)).
 
 
 Lemma even_mult : forall x, even x -> exists y, x = 2 *y.
@@ -375,8 +378,8 @@ Proof.
 
 Lemma not_even_1: ~even 1.
 Proof.
-    intros even1.
-    inversion even1.
+    intuition.
+    inversion H.
     Qed.
 
 Lemma even_inv : forall x, even (S (S x)) -> even x.
@@ -384,4 +387,9 @@ Proof.
     intros x H.
     inversion H.
     apply H1.
+    Qed.
+Lemma even' : even2 12.
+Proof.
+    apply even2S.
+    apply even02.
     Qed.
