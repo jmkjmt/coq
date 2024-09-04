@@ -60,6 +60,7 @@ end.
 
 Theorem eq: forall l: lambda, check_ref l = check_sub l.
 Proof.
+  induction l.
   
 
 
