@@ -8,92 +8,97 @@ Fixpoint natadd1 (n1 n2 : natural) : natural :=
   | SUCC n => SUCC (natadd1 n n2)
   end.
 
-Fixpoint oneadd (n1 : natural) : natural :=
-  match n1 with
-   ZERO => ZERO
-  | SUCC (n) => SUCC (oneadd n)
-  end.
-
 Fixpoint natadd2 (n1 n2 : natural) : natural :=
-  match n1 with
-  | ZERO => oneadd n2
-  | SUCC n => natadd2 n (SUCC n2)
-  end.
-
-Fixpoint natadd3 (n1 n2 : natural) : natural :=
   match n2 with
   | ZERO => n1
-  | SUCC n => SUCC (natadd3 n1 n)
+  | SUCC n => SUCC (natadd2 n1 n)
   end.
 
-Lemma first : forall n: natural, n = oneadd n.
+Fixpoint natadd3 (n1 n2:natural) : natural :=
+  match n1 with
+  | ZERO => n2
+  | SUCC n => natadd3 n (SUCC n2)
+  end.
+
+Fixpoint natadd4 (n1 n2 : natural) : natural :=
+  match n2 with
+  | ZERO => n1
+  | SUCC n => natadd4 (SUCC n1) n
+  end.
+
+Fixpoint natmul1 (n1 n2 :natural) : natural :=
+  match n1 with
+  | ZERO => ZERO
+  | SUCC n => natadd1 n2 (natmul1 n n2)
+  end.
+
+Fixpoint natmul2 (n1 n2 :natural) : natural :=
+  match n1 with
+  | ZERO => ZERO
+  | SUCC n => natadd1 (natmul2 n n2) n2
+  end.
+
+Fixpoint natmul3 (n1 n2 : natural) : natural :=
+  match n1 with
+  | ZERO => ZERO
+  | SUCC n => natadd3 n2 (natmul3 n n2) 
+  end.
+
+Fixpoint natmul4 (n1 n2: natural) : natural :=
+  match n1 with
+  | ZERO => ZERO
+  | SUCC n => natadd3 (natmul4 n n2) n2
+  end.
+
+Fixpoint natmul5 (n1 n2:natural) : natural :=
+  match n2 with
+  | ZERO => ZERO
+  | SUCC n => natadd2 n1 (natmul5 n1 n)
+  end.
+
+Fixpoint natmul6 (n1 n2:natural) : natural :=
+  match n2 with
+  | ZERO => ZERO
+  | SUCC n => natadd4 n1 (natmul6 n1 n)
+  end.
+
+Fixpoint natmul7 (n1 n2:natural) : natural :=
+  match n2 with
+  | ZERO => ZERO
+  | SUCC n => natadd1 n1 (natmul7 n1 n)
+  end.
+
+Lemma in_out :forall n1 n2, SUCC (natadd1 n2 n1) = natadd1 n2 (SUCC n1).
 Proof.
-  induction n.
+  induction n2.
+  simpl.
   reflexivity.
   simpl.
-  rewrite <- IHn.
+  rewrite IHn2.
   reflexivity.
   Qed.
-
-Lemma second: forall n1 n2, SUCC (natadd2 n1 n2) = natadd2 n1 (SUCC n2).
+Lemma sym: forall n1 n2, natadd1 n1 n2 = natadd1 n2 n1.
 Proof.
+  intros.
   induction n1.
   simpl.
+  induction n2.
   reflexivity.
   simpl.
-  intros n2.
-  apply IHn1.
-  Qed.
-
-Theorem eq : forall n1 n2, natadd1 n1 n2 = natadd2 n1 n2.
-Proof.
-  induction n1.
+  rewrite <- IHn2.
+  reflexivity.
   simpl.
-  apply first.
-  simpl.
-  intros n2.
   rewrite IHn1.
-  apply second.
+  apply in_out.
   Qed.
-
   
-Theorem eq2: forall n1 n2, natadd1 n1 n2 = natadd3 n1 n2.
+Theorem natmul_eq : forall n1 n2, natmul1 n1 n2 = natmul2 n1 n2.
 Proof.
+  intros.
   induction n1.
   simpl.
-  induction n2.
-  simpl.
   reflexivity.
-  simpl.
-  rewrite <- IHn2.
-  reflexivity.
-  induction n2.
   simpl.
   rewrite IHn1.
-  simpl.
-  reflexivity.
-  simpl.
-  rewrite <- IHn2.
-  simpl.
-  rewrite IHn1.
-  rewrite IHn1.
-  simpl.
-  reflexivity.
+  apply sym.
   Qed.
-
-
-(* Lemma example2 : forall a b:Prop, a /\ b -> b /\ a.
-
-Proof.
-intros a b H.
-split.
-destruct H as [H1 H2].
-exact H2.
-intuition.
-Qed. *)
-
-
-
-
-
-  (* Proof goes here using induction on n1 *)

@@ -3,8 +3,7 @@ Require Import Program.
 Require Import Lia.
 Open Scope Z_scope.
 
-
-Program Fixpoint solution_1 (f: Z -> Z) (a: Z) (b: Z) {measure (b-a)}: Z :=
+Program Fixpoint solution_1 (f: Z -> Z) (a: Z) (b: Z) {measure (Z.to_nat b- Z.to_nat a)}: Z :=
   if Z.ltb b a then 0
   else if Z.eqb a b then f a
   else f a + solution_1 f (a + 1) b.
