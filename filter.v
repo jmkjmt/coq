@@ -42,8 +42,7 @@ Proof.
     simpl.
     case (pred a).
     rewrite IHlst.
-    
-    Search (_::_ ).
+    Abort.
 
     
     
