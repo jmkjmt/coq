@@ -52,6 +52,3 @@ Fixpoint eval_sub (f : formula) : bool :=
   | Imply a b => eval_sub (Not (AndAlso a (Not b)))
   | Equal a b => if (Z.eqb (evall a) (evall b)) then true else false
   end.
-    
-    
-       
