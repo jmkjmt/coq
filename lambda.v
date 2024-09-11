@@ -5,7 +5,7 @@ Require Import Bool.
 Require Import List.
 Import ListNotations.
 Open Scope string_scope.
-Open Scope list_scope.
+
 Module Export StringSyntax. End StringSyntax.
 
 Definition var := string.
@@ -48,7 +48,7 @@ match lambda with
 | P x e => checkStation x (isInArea e vars)
 | C e1 e2 => (isInArea e1 vars) ++ (isInArea e2 vars)
 end.
-
+Open Scope list_scope.
 Definition check_sub (lambda:lambda) : bool :=
 let result := (isInArea lambda []) in
 match result with
@@ -56,10 +56,19 @@ match result with
 | hd::tl => false
 end.
 
-
+Search (_ :: _).
 
 Theorem eq: forall l: lambda, check_ref l = check_sub l.
 Proof.
+  intros.
+  unfold check_ref.
+  unfold check_sub.
+  case (isInArea l []) eqn:H.
+  unfold sub_check.
+  induction l.
+  exfalso.
+  simpl in H.
+  
   
 
 
