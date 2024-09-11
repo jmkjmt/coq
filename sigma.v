@@ -1,44 +1,24 @@
 Require Import Program Arith ZArith Lia.
 
-Program Fixpoint solution_2 (f: nat -> nat) (a: nat) (b : nat) {measure (b-a)} : nat :=
-    if (Nat.ltb b a) then 0 
-    else (f b) + solution_2 f a (b-1).
-
-    Next Obligation.
-    
-
-Program Fixpoint solution_1 (f: Z -> Z) (a: Z) (b: Z) {measure (Z.to_nat b- Z.to_nat a)}: Z :=
-  if Z.ltb b a then 0
-  else if Z.eqb a b then f a
+Program Fixpoint solution_1 (f: nat -> Z) (a b: nat) {measure (b - a)}: Z :=
+  if Nat.ltb b a then 0
+  else if Nat.eqb a b then f a
   else f a + solution_1 f (a + 1) b.
   
   Next Obligation. 
   
-  
 
+Program Fixpoint solution_2 (f: nat -> nat) (a b : nat) {measure (b-a)} : nat :=
+    if (Nat.ltb b a) then 0 
+    else (f b) + solution_2 f a (b-1).
 
-  
-
-
-  
-
-  
-  
- 
-
+    Next Obligation.
 
 
 Program Fixpoint solution_2 (f: nat -> nat) (a: nat) (b : nat) : nat :=
     if (Nat.ltb b a) then 0 
     else (f b) + solution_2 f a (b-1)
 .
-
-
-Compute solution_1 (fun x => x + 1) 1 3.
-
-
-
-
 
 Program Fixpoint aux (a:nat) (b:nat) (f:nat->nat) (acc:nat) : nat :=
 if (Nat.ltb b a) then acc else aux (a+1) b f (acc + (f a))
