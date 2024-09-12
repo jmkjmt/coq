@@ -1,7 +1,9 @@
 Require Import Program Arith ZArith Lia.
 
+Notation "x <? y" := (Nat.ltb x y).
+
 Program Fixpoint solution_2 (f: nat -> nat) (a: nat) (b : nat) {measure (b-a)} : nat :=
-    if (Nat.ltb b a) then 0 
+    if (b <? a) then 0 
     else (f b) + solution_2 f a (b-1).
 
     Next Obligation.

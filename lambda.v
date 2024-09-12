@@ -4,7 +4,7 @@ Require Import Ascii.
 Require Import Bool.
 Require Import List.
 Import ListNotations.
-Open Scope string_scope.
+Open Scope list_scope.
 
 Module Export StringSyntax. End StringSyntax.
 
@@ -22,7 +22,7 @@ Check lambda_rec.
 Fixpoint is_mem (variables: list var) (var:var) : bool :=
 match variables with
 | [] => false
-| hd::tl => if hd =? var then true else is_mem tl var
+| hd::tl => if String.eqb hd var then true else is_mem tl var
 end.
 
 Fixpoint sub_check (lambda:lambda) (vars: list var) : bool :=
@@ -38,7 +38,7 @@ Fixpoint checkStation (v :var) (variables: list var) : list var :=
   match variables with
   | [] => []
   | hd::tl =>
-      if hd =? v then checkStation v tl
+      if String.eqb hd v then checkStation v tl
       else hd :: checkStation v tl
   end.
 
@@ -55,19 +55,25 @@ match result with
 | [] => true
 | hd::tl => false
 end.
-
-Search (_ :: _).
-
+Lemma ref: ([] = ([]: list var)) = True.
+Proof.
+  simpl.
+  
 Theorem eq: forall l: lambda, check_ref l = check_sub l.
 Proof.
   intros.
   unfold check_ref.
   unfold check_sub.
-  case (isInArea l []) eqn:H.
-  unfold sub_check.
+  destruct (isInArea l []) eqn:H.
   induction l.
-  exfalso.
   simpl in H.
+  discriminate.
+  simpl.
+  simpl in H.
+  case (isInArea l) eqn : H1.
+  Check (isInArea l []).
+  
+
   
   
 
