@@ -1,4 +1,5 @@
 Require Import Program Arith ZArith Lia.
+Open Scope N_scope.
 
 Program Fixpoint solution_1 (f: nat -> Z) (a b: nat) {measure (b - a)}: Z :=
   if Nat.ltb b a then 0
