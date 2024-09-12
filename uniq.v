@@ -57,3 +57,53 @@ Definition solution_4 (lst: list Z) : list Z :=
         end
     in
     uniqSave_4 lst [].
+Lemma l1: forall lst a , is_in_3 (remove_elem_1 a lst ) a = false.
+Proof.
+    intros.
+    induction lst.
+    simpl.
+    reflexivity.
+    simpl.
+    case(Z.eqb a a0) eqn: Hz.
+    rewrite IHlst.
+    reflexivity.
+    simpl.
+    rewrite Hz.
+    rewrite IHlst.
+    reflexivity.
+    Qed.
+Lemma l2 : forall lst1 lst2, unique_3 lst2 [] = [] -> lst1 = unique_3 lst2 lst1.
+Proof.
+    intros.
+    induction lst2.
+    reflexivity.
+    simpl.
+    induction lst1.
+    simpl.
+    
+
+Theorem eq1: forall lst: list Z, solution_1 lst = solution_3 lst.
+Proof.
+    intros.
+    unfold solution_3.
+    induction lst.
+    reflexivity.
+    simpl.
+    destruct (solution_1 lst) eqn: H.
+    simpl.
+    induction lst.
+    simpl.
+    reflexivity.
+    simpl.
+    case (Z.eqb a0 a) eqn:Hz.
+
+
+
+    
+    
+
+    
+    
+    unfold unique_3.
+
+
