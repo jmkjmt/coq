@@ -56,20 +56,34 @@ match result with
 | hd::tl => false
 end.
 
+Lemma l1 : forall (l:lambda) (v:var) (lst: list var), sub_check l lst = true -> sub_check l (v::lst) = true.
+Proof.
+  induction l.
+  simpl.
+  case (is_mem lst v = true).
+  simpl in H.
+  rewrite H.
+  case (String.eqb v v0).
+  auto.
+  auto.
+  simpl.
+  simpl in H.
+  
 
 Theorem eq: forall l: lambda, check_ref l = check_sub l.
 Proof.
   intros.
+  induction l.
+  reflexivity.
+  unfold check_ref in IHl.
+  unfold check_sub in IHl.
   unfold check_ref.
   unfold check_sub.
-  destruct (isInArea l []) eqn:H.
-  induction l.
-  simpl in H.
-  discriminate.
   simpl.
-  simpl in H.
-  case (isInArea l) eqn : H1.
-  Check (isInArea l []).
+  case (isInArea l []) eqn:H.
+  simpl.
+  
+
   
 
   
