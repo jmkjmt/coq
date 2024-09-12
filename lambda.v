@@ -55,10 +55,8 @@ match result with
 | [] => true
 | hd::tl => false
 end.
-Lemma ref: ([] = ([]: list var)) = True.
-Proof.
-  simpl.
-  
+
+
 Theorem eq: forall l: lambda, check_ref l = check_sub l.
 Proof.
   intros.

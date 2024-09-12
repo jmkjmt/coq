@@ -1,23 +1,8 @@
 Require Import Program Arith ZArith Lia.
 
-<<<<<<< HEAD
-Notation "x <? y" := (Nat.ltb x y).
-
-Program Fixpoint solution_2 (f: nat -> nat) (a: nat) (b : nat) {measure (b-a)} : nat :=
-    if (b <? a) then 0 
-    else (f b) + solution_2 f a (b-1).
-
-    Next Obligation.
-    
-
-Program Fixpoint solution_1 (f: Z -> Z) (a: Z) (b: Z) {measure (Z.to_nat b- Z.to_nat a)}: Z :=
-  if Z.ltb b a then 0
-  else if Z.eqb a b then f a
-=======
 Program Fixpoint solution_1 (f: nat -> Z) (a b: nat) {measure (b - a)}: Z :=
   if Nat.ltb b a then 0
   else if Nat.eqb a b then f a
->>>>>>> refs/remotes/origin/main
   else f a + solution_1 f (a + 1) b.
   
   Next Obligation. 
