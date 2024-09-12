@@ -56,18 +56,17 @@ match result with
 | hd::tl => false
 end.
 
-Lemma l1 : forall (l:lambda) (v:var) (lst: list var), sub_check l lst = true -> sub_check l (v::lst) = true.
+Lemma l1 : forall (l:lambda) (v:var), sub_check l [] = true -> sub_check l [v] = true.
 Proof.
+  intros.
   induction l.
+  simpl in H.
+  discriminate.
+  simpl in H.
   simpl.
-  intros.
-  rewrite H.
-  case(String.eqb v0 v).
-  auto.
-  auto.
-  simpl.
-  intros.
-  apply IHl.
+  
+
+
 
   
 
