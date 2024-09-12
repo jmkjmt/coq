@@ -60,14 +60,15 @@ Lemma l1 : forall (l:lambda) (v:var) (lst: list var), sub_check l lst = true -> 
 Proof.
   induction l.
   simpl.
-  case (is_mem lst v = true).
-  simpl in H.
+  intros.
   rewrite H.
-  case (String.eqb v v0).
+  case(String.eqb v0 v).
   auto.
   auto.
   simpl.
-  simpl in H.
+  intros.
+  apply IHl.
+
   
 
 Theorem eq: forall l: lambda, check_ref l = check_sub l.
