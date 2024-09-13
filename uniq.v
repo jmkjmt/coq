@@ -59,7 +59,7 @@ Definition solution_4 (lst: list Z) : list Z :=
     uniqSave_4 lst [].
 
 
-Theorem eq1: forall lst: list Z, solution_1 lst = solution_3 lst.
+Theorem eq1: forall lst: list Z, solution_1 lst = solution_3 lst. 
 Proof.
     intros.
     unfold solution_3.
