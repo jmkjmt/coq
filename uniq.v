@@ -16,17 +16,6 @@ Fixpoint solution_1 (lst:list Z) : list Z :=
     | hd::tl => hd::(remove_elem_1 hd (solution_1 tl))
     end.
 
-(* Fixpoint drop_2 (lst:list Z) (n:Z): list Z :=
-    match lst with
-    | [] => []
-    | hd::tl => if Z.eqb hd n then drop_2 tl n else hd :: (drop_2 tl n)
-    end.
-
-Fixpoint solution_2 (lst:list Z) : list Z :=
-    match lst with
-    | [] => []
-    | hd::tl => hd :: solution_2 (drop_2 tl hd)
-    end. *)
 
 Fixpoint is_in_3 (lst:list Z) (a:Z) : bool :=
     match lst with
@@ -58,6 +47,42 @@ Definition solution_4 (lst: list Z) : list Z :=
     in
     uniqSave_4 lst [].
 
+(* Fixpoint drop_2 (lst:list Z) (n:Z): list Z :=
+    match lst with
+    | [] => []
+    | hd::tl => if Z.eqb hd n then drop_2 tl n else hd :: (drop_2 tl n)
+    end.
+
+Fixpoint solution_2 (lst:list Z) : list Z :=
+    match lst with
+    | [] => []
+    | hd::tl => hd :: solution_2 (drop_2 tl hd)
+    end. *)
+Lemma l1 : forall lst, forall (a: Z), a:: remove_elem_1 a lst = unique_3 lst [a].
+Proof.
+    intros lst.
+    induction lst.
+    reflexivity.
+    simpl.
+    intros.
+    case (Z.eqb a0 a) eqn: H.
+    rewrite Z.eqb_eq in H.
+    rewrite H.
+    rewrite Z.eqb_refl.
+    rewrite IHlst.
+    reflexivity.
+    SearchRewrite (_ =? _ ).
+    rewrite Z.eqb_sym in H.
+    rewrite H.
+    induction lst.
+    simpl.
+    reflexivity.
+    simpl.
+    case (Z.eqb a0 a1) eqn: H1.
+    rewrite Z.eqb_sym in H1.
+    rewrite H1.
+    rewrite IHlst in IHlst0.
+
 
 Theorem eq1: forall lst: list Z, solution_1 lst = solution_3 lst. 
 Proof.
@@ -66,14 +91,9 @@ Proof.
     induction lst.
     reflexivity.
     simpl.
-    
-
-
-    
-    
-
-    
-    
-    unfold unique_3.
+    rewrite IHlst.
+    induction lst.
+    reflexivity.
+    induction lst.
 
 
