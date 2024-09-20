@@ -68,6 +68,15 @@ Fixpoint natmul7 (n1 n2:natural) : natural :=
   | SUCC n => natadd1 n1 (natmul7 n1 n)
   end.
 
+Fixpoint natmul_helper (n1 n2 result: natural) : natural :=
+  match n1, n2 with 
+      | _, ZERO => result
+      | ZERO, _ => result
+      | SUCC v1, _ => natmul_helper v1 n2 (natadd1 result n2) end.
+
+Definition natmul_sub (n1 n2 : natural) : natural :=
+  natmul_helper n1 n2 ZERO.
+
 Lemma in_out :forall n1 n2, SUCC (natadd1 n2 n1) = natadd1 n2 (SUCC n1).
 Proof.
   induction n2.
@@ -102,3 +111,75 @@ Proof.
   rewrite IHn1.
   apply sym.
   Qed.
+Lemma lemma3: forall n1, forall n2, forall result, natadd1 result (natmul1 n1 n2) = natmul_helper n1 n2 result.
+Proof.
+  induction n1.
+  simpl.
+  intros n2.
+  case n2.
+  intros result.
+  induction result.
+  reflexivity.
+  simpl.
+  rewrite IHresult.
+  reflexivity.
+  intros result.
+  intros result0.
+  induction result0.
+  reflexivity.
+  simpl.
+  rewrite IHresult0.
+  reflexivity.
+  intros result.
+  intros result0.
+  simpl.
+  rewrite IHn1.
+  induction result.
+  rewrite <- IHn1.
+  simpl.
+  induction n1.
+  simpl.
+  induction result0.
+  reflexivity.
+  simpl.
+  rewrite IHresult0.
+  reflexivity.
+  simpl.
+  apply IHn0.
+  intros.
+  
+
+Theorem natmul_eq2 : forall n1, forall n2, natmul1 n1 n2 = natmul_sub n1 n2.
+Proof.
+  assert(lemma1: forall n , natmul1 n ZERO = ZERO).
+  induction n.
+  reflexivity.
+  simpl.
+  exact IHn.
+  assert (lemma2: forall n, natadd1 n ZERO = n).
+  induction n.
+  reflexivity.
+  simpl.
+  rewrite IHn.
+  reflexivity.
+  unfold natmul_sub.
+  induction n1.
+  simpl.
+  intros n2.
+  case n2.
+  reflexivity.
+  reflexivity.
+  simpl.
+  intros n2.
+  case n2.
+  simpl.
+  apply lemma1.
+  intros n.
+  
+
+  
+  
+
+
+  
+  
