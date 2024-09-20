@@ -112,40 +112,30 @@ Proof.
   apply sym.
   Qed.
 
-Theorem natmul_eq2 : forall n1, forall n2, natmul1 n1 n2 = natmul_sub n1 n2.
+Lemma l1 : forall n1, forall n2, forall result, natmul_helper n1 n2 result = natadd1 (natmul1 n1 n2) result.
 Proof.
-  assert(lemma1: forall n , natmul1 n ZERO = ZERO).
-  induction n.
-  reflexivity.
+  intros n1 n2.
+  induction n1.
   simpl.
-  exact IHn.
-  assert (lemma2: forall n, natadd1 n ZERO = n).
+  case n2.
+  reflexivity.
+  reflexivity.
+  intros result.
+  simpl.
+  case n2.
+  simpl.
+  assert(lemma2: forall n, natmul1 n ZERO = ZERO).
   induction n.
   reflexivity.
   simpl.
   rewrite IHn.
   reflexivity.
-  unfold natmul_sub.
-  induction n1.
+  rewrite lemma2.
   simpl.
-  intros n2.
-  case n2.
-  reflexivity.
   reflexivity.
   simpl.
-  intros n2.
-  case n2.
-  simpl.
-  apply lemma1.
   intros n.
-  assert (forall n n1, natadd1 (SUCC n) (natmul1 n1 (SUCC n)) = natmul_helper n1 (SUCC n) (SUCC n)).
-  induction n0.
-  simpl.
-  induction n0.
-  simpl.
-  reflexivity.
-  simpl.
-  rewrite IHn0.
+  
   
   
 
