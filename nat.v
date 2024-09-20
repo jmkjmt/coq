@@ -111,43 +111,6 @@ Proof.
   rewrite IHn1.
   apply sym.
   Qed.
-Lemma lemma3: forall n1, forall n2, forall result, natadd1 result (natmul1 n1 n2) = natmul_helper n1 n2 result.
-Proof.
-  induction n1.
-  simpl.
-  intros n2.
-  case n2.
-  intros result.
-  induction result.
-  reflexivity.
-  simpl.
-  rewrite IHresult.
-  reflexivity.
-  intros result.
-  intros result0.
-  induction result0.
-  reflexivity.
-  simpl.
-  rewrite IHresult0.
-  reflexivity.
-  intros result.
-  intros result0.
-  simpl.
-  rewrite IHn1.
-  induction result.
-  rewrite <- IHn1.
-  simpl.
-  induction n1.
-  simpl.
-  induction result0.
-  reflexivity.
-  simpl.
-  rewrite IHresult0.
-  reflexivity.
-  simpl.
-  apply IHn0.
-  intros.
-  
 
 Theorem natmul_eq2 : forall n1, forall n2, natmul1 n1 n2 = natmul_sub n1 n2.
 Proof.
@@ -175,6 +138,15 @@ Proof.
   simpl.
   apply lemma1.
   intros n.
+  assert (forall n n1, natadd1 (SUCC n) (natmul1 n1 (SUCC n)) = natmul_helper n1 (SUCC n) (SUCC n)).
+  induction n0.
+  simpl.
+  induction n0.
+  simpl.
+  reflexivity.
+  simpl.
+  rewrite IHn0.
+  
   
 
   
