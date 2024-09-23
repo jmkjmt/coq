@@ -135,13 +135,47 @@ Proof.
   reflexivity.
   simpl.
   intros n.
-  
-  
-  
+  Abort.
+Lemma l2: forall n1 n2, natmul1 n1 n2 = natmul1 n2 n1.
+Proof.
+  induction n1.
+  simpl.
+  induction n2.
+  reflexivity.
+  simpl.
+  rewrite <- IHn2.
+  reflexivity.
+  intros n2.
+  simpl.
+  rewrite IHn1.
+  induction n2.
+  simpl.
+  reflexivity.
+  simpl.
+  rewrite <- IHn2.
+  assert( lemma:forall n1 n2, natadd1 n2 (natadd1 n1 (natmul1 n2 n1)) = natadd1 n1 (natadd1 n2 (natmul1 n2 n1))).
+  induction n0.
+  simpl.
+  reflexivity.
+  simpl.
+  intros n3.
 
-  
-  
 
-
-  
-  
+Theorem eq : forall n1, forall n2, natmul_helper n1 n2 ZERO = natmul1 n1 n2.
+Proof.
+  induction n1.
+  intros.
+  simpl.
+  case n2.
+  reflexivity.
+  reflexivity.
+  induction n2.
+  simpl.
+  assert (lemma1: forall n, ZERO = natmul1 n ZERO).
+  induction n.
+  reflexivity.
+  simpl.
+  rewrite <- IHn.
+  reflexivity.
+  apply lemma1.
+  simpl.
