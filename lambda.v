@@ -69,7 +69,7 @@ Fixpoint check_4 (ma: lambda) (li:list var) : bool :=
   | C me1 me2 => (check_4 me1 li) && (check_4 me2 li)
   | V na => exist (fun x => String.eqb x na) li
   end.
-Definition solutoin_4 (m : lambda) : bool :=
+Definition solution_4 (m : lambda) : bool :=
   match m with
   | P st k => check_4 k [st]
   | C me1 me2 => check_4 me1 [] && check_4 me2 []
@@ -115,9 +115,47 @@ Proof.
   reflexivity.
   Qed.
   
-
+Theorem eq2 : forall (m : lambda), solution_1 m = solution_4 m.
+Proof.
+  assert (lemma1: forall m lst, sub_check_1 m lst = check_4 m lst).
+  {
+    induction m.
+    intros lst.
+    simpl.
+    induction lst.
+    simpl.
+    reflexivity.
+    simpl.
+    case (String.eqb a v) eqn :eq.
+    reflexivity.
+    simpl.
+    rewrite IHlst.
+    reflexivity.
+    intros.
+    simpl.
+    rewrite IHm.
+    reflexivity.
+    simpl.
+    intros.
+    rewrite IHm1.
+    rewrite IHm2.
+    reflexivity.
+  }
+  induction m.
+  unfold solution_1.
+  reflexivity.
+  unfold solution_1.
+  simpl.  
+  apply lemma1.
+  unfold solution_1.
+  simpl.
+  rewrite lemma1.
+  rewrite lemma1.
+  reflexivity.
+  Qed.
 
   
+
 
 
 
