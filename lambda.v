@@ -14,74 +14,114 @@ Inductive lambda : Type :=
 | P : var -> lambda -> lambda
 | C : lambda -> lambda -> lambda.
 
-Check lambda_sind.
-Check lambda_rect.
-Check lambda_ind.
-Check lambda_rec.
 
-Fixpoint is_mem (variables: list var) (var:var) : bool :=
+Fixpoint is_mem_1 (variables: list var) (var:var) : bool :=
 match variables with
 | [] => false
-| hd::tl => if String.eqb hd var then true else is_mem tl var
+| hd::tl => if String.eqb hd var then true else is_mem_1 tl var
 end.
 
-Fixpoint sub_check (lambda:lambda) (vars: list var) : bool :=
+Fixpoint sub_check_1 (lambda:lambda) (vars: list var) : bool :=
 match lambda with
-| V x => is_mem vars x
-| P x e => sub_check e (x::vars)
-| C e1 e2 => (sub_check e1 vars) && (sub_check e2 vars)
+| V x => is_mem_1 vars x
+| P x e => sub_check_1 e (x::vars)
+| C e1 e2 => (sub_check_1 e1 vars) && (sub_check_1 e2 vars)
 end.
 
-Definition check_ref (lambda:lambda) : bool := sub_check lambda [].
+Definition solution_1 (lambda:lambda) : bool := sub_check_1 lambda [].
 
-Fixpoint checkStation (v :var) (variables: list var) : list var :=
-  match variables with
-  | [] => []
-  | hd::tl =>
-      if String.eqb hd v then checkStation v tl
-      else hd :: checkStation v tl
+Fixpoint mem (v:var) (l:list var) : bool :=
+  match l with
+  | [] => false
+  | hd::tl => if String.eqb hd v then true else mem v tl
   end.
 
-Fixpoint isInArea (lambda:lambda) (vars: list var) : list var :=
-match lambda with
-| V x => x::vars
-| P x e => checkStation x (isInArea e vars)
-| C e1 e2 => (isInArea e1 vars) ++ (isInArea e2 vars)
-end.
-Open Scope list_scope.
-Definition check_sub (lambda:lambda) : bool :=
-let result := (isInArea lambda []) in
-match result with
-| [] => true
-| hd::tl => false
-end.
+Fixpoint check_2 (ma:lambda) (li : list var) : bool :=
+  match ma with
+  | P st k => check_2 k (st::li)
+  | C me1 me2 => (check_2 me1 li) && (check_2 me2 li)
+  | V na => mem na li
+  end.
+Definition solution_2 (m: lambda) : bool :=
+  match m with
+  | P st k => check_2 k [st]
+  | C me1 me2 => check_2 me1 [] && check_2 me2 []
+  | V na => false
+  end.
 
-Lemma l1 : forall (l:lambda) (v:var), sub_check l [] = true -> sub_check l [v] = true.
+Fixpoint check_3 (ma: lambda) (li:list var) : bool :=
+  match ma with
+  | P st k => if mem st li then check_3 k li else check_3 k (st::li)
+  | C me1 me2 => (check_3 me1 li) && (check_3 me2 li)
+  | V na => mem na li
+  end.
+
+Definition solution_3 (m:lambda) : bool := check_3 m [].
+
+Fixpoint exist (p : var -> bool) (l : list var) : bool :=
+  match l with
+  | [] => false
+  | hd::tl => p hd || exist p tl
+  end.
+Fixpoint check_4 (ma: lambda) (li:list var) : bool :=
+  match ma with
+  | P st k => check_4 k (st::li)
+  | C me1 me2 => (check_4 me1 li) && (check_4 me2 li)
+  | V na => exist (fun x => String.eqb x na) li
+  end.
+Definition solutoin_4 (m : lambda) : bool :=
+  match m with
+  | P st k => check_4 k [st]
+  | C me1 me2 => check_4 me1 [] && check_4 me2 []
+  | V na => false
+  end.
+
+Theorem eq1 : forall (m : lambda), solution_1 m = solution_2 m.
 Proof.
-  intros.
-  induction l.
-  simpl in H.
-  discriminate.
-  simpl in H.
+  assert(lemma1: forall m l, sub_check_1 m l = check_2 m l).
+  { 
+    induction m.
+    simpl.
+    induction l.
+    simpl.
+    reflexivity.
+    simpl.
+    rewrite IHl.
+    reflexivity.
+    simpl.
+    intros l.
+    rewrite IHm.
+    reflexivity.
+    intros l.
+    simpl.
+    rewrite IHm1.
+    rewrite IHm2.
+    reflexivity.
+  }
+  induction m.
+  reflexivity.  
+  unfold solution_1.
+  simpl.  
+  apply lemma1.
+  unfold solution_1.
   simpl.
-  
-
-
-
-  
-
-Theorem eq: forall l: lambda, check_ref l = check_sub l.
-Proof.
-  intros.
-  induction l.
+  unfold solution_1 in *.
+  rewrite IHm1.
+  rewrite IHm2.
+  rewrite <- IHm1.
+  rewrite <- IHm2.
+  rewrite lemma1.
+  rewrite lemma1.
   reflexivity.
-  unfold check_ref in IHl.
-  unfold check_sub in IHl.
-  unfold check_ref.
-  unfold check_sub.
-  simpl.
-  case (isInArea l []) eqn:H.
-  simpl.
+  Qed.
+  
+
+
+  
+
+
+
+
   
 
   
