@@ -32,20 +32,18 @@ Fixpoint unique_3 (lst1:list Z) (lst2: list Z) : list Z :=
 Definition solution_3 (lst:list Z) : list Z :=
     unique_3 lst [].
 
-Definition solution_4 (lst: list Z) : list Z :=
-    let fix isNotIn_4 (tlst: list Z) (c: Z) : bool :=
-        match tlst with
-        | [] => true
-        | hd::tl => if Z.eqb hd c then false else isNotIn_4 tl c
-        end
-    in
-    let fix uniqSave_4 (l1:list Z) (l2:list Z) : list Z :=
-        match l1 with
-        | [] => l2
-        | hd::tl => if isNotIn_4 l2 hd then uniqSave_4 tl (l2++[hd]) else uniqSave_4 tl l2
-        end
-    in
-    uniqSave_4 lst [].
+Fixpoint isNotIN_4 (lst: list Z) (c: Z) : bool :=
+    match lst with
+    | [] => true
+    | hd::tl => if Z.eqb hd c then false else isNotIN_4 tl c
+    end.
+
+Fixpoint uniqSave_4 (l1:list Z) (l2:list Z) : list Z :=
+    match l1 with
+    | [] => l2
+    | hd::tl => if isNotIN_4 l2 hd then uniqSave_4 tl (l2++[hd]) else uniqSave_4 tl l2
+    end.
+Definition solution_4 (lst: list Z) : list Z := uniqSave_4 lst [].
 
 (* Fixpoint drop_2 (lst:list Z) (n:Z): list Z :=
     match lst with
@@ -58,42 +56,61 @@ Fixpoint solution_2 (lst:list Z) : list Z :=
     | [] => []
     | hd::tl => hd :: solution_2 (drop_2 tl hd)
     end. *)
-Lemma l1 : forall lst, forall (a: Z), a:: remove_elem_1 a lst = unique_3 lst [a].
+Theorem eq: forall lst, solution_3 lst = solution_4 lst.
 Proof.
-    intros lst.
+    assert(lemma1: forall lst1 lst2, unique_3 lst1 lst2 = uniqSave_4 lst1 lst2).
+    {
+        induction lst1.
+        reflexivity.
+        intros.
+        simpl.
+        rewrite IHlst1.
+        rewrite IHlst1.
+        case (is_in_3 lst2 a) eqn:E.
+        assert(forall lst2 a ,is_in_3 lst2 a = true -> isNotIN_4 lst2 a = false).
+        {
+            induction lst0.
+            simpl.
+            discriminate.
+            simpl.
+            intros.
+            case (Z.eqb a0 a1) eqn:E1.
+            reflexivity.
+            apply IHlst0.
+            rewrite Z.eqb_sym in E1.
+            rewrite E1 in H.
+            apply H.
+        }
+        apply H in E.
+        rewrite E.
+        reflexivity.
+        assert(forall lst2 a, is_in_3 lst2 a = false -> isNotIN_4 lst2 a = true).
+        {
+            induction lst0.
+            simpl.
+            reflexivity.
+            intros.
+            simpl.
+            case (Z.eqb a0 a1) eqn:E1.
+            unfold is_in_3 in H.
+            rewrite Z.eqb_sym in E1.
+            rewrite E1 in H.
+            discriminate.
+            apply IHlst0.
+            unfold is_in_3 in H.
+            rewrite Z.eqb_sym in E1.
+            rewrite E1 in H.
+            apply H.
+        }
+        apply H in E.
+        rewrite E.
+        reflexivity.
+    }
     induction lst.
     reflexivity.
-    simpl.
-    intros.
-    case (Z.eqb a0 a) eqn: H.
-    rewrite Z.eqb_eq in H.
-    rewrite H.
-    rewrite Z.eqb_refl.
-    rewrite IHlst.
-    reflexivity.
-    SearchRewrite (_ =? _ ).
-    rewrite Z.eqb_sym in H.
-    rewrite H.
-    induction lst.
-    simpl.
-    reflexivity.
-    simpl.
-    case (Z.eqb a0 a1) eqn: H1.
-    rewrite Z.eqb_sym in H1.
-    rewrite H1.
-    rewrite IHlst in IHlst0.
-
-
-Theorem eq1: forall lst: list Z, solution_1 lst = solution_3 lst. 
-Proof.
-    intros.
     unfold solution_3.
-    induction lst.
-    reflexivity.
+    unfold solution_4.
     simpl.
-    rewrite IHlst.
-    induction lst.
-    reflexivity.
-    induction lst.
-
+    apply lemma1.
+    Qed.
 
