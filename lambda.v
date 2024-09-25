@@ -76,6 +76,14 @@ Definition solution_4 (m : lambda) : bool :=
   | V na => false
   end.
 
+Lemma l1 : forall m v, sub_check_1 m [v] = check_2 m [v].
+Proof.
+  induction m.
+  reflexivity.
+  simpl.
+  intros.
+  
+
 Theorem eq1 : forall (m : lambda), solution_1 m = solution_2 m.
 Proof.
   assert(lemma1: forall m l, sub_check_1 m l = check_2 m l).
@@ -101,7 +109,7 @@ Proof.
   induction m.
   reflexivity.  
   unfold solution_1.
-  simpl.  
+  simpl.
   apply lemma1.
   unfold solution_1.
   simpl.
