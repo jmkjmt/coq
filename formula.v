@@ -19,8 +19,8 @@ Inductive formula : Type :=
 Fixpoint exp_eval (exp:exp) : Z :=
 match exp with
 | Num n => n
-| Plus e1 e2 => (exp_eval e1) + (exp_eval e2)
-| Minus e1 e2 => (exp_eval e1) - (exp_eval e2)
+| Plus e1 e2 => Z.add (exp_eval e1) (exp_eval e2)
+| Minus e1 e2 => Z.sub (exp_eval e1) (exp_eval e2)
 end.
 
 

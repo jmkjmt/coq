@@ -12,3 +12,15 @@ Fixpoint solution (t:btree) : btree :=
     | Empty => Empty
     | Node n l r => Node n (solution r) (solution l)
     end.
+
+Theorem test1: forall t, solution (solution t) = t.
+Proof.
+    intros.
+    induction t.
+    simpl.
+    reflexivity.
+    simpl.
+    rewrite IHt1.
+    rewrite IHt2.
+    reflexivity.
+    Qed.

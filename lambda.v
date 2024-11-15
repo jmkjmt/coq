@@ -1,12 +1,7 @@
-Require Import Arith.
 Require Import String.
-Require Import Ascii.
-Require Import Bool.
 Require Import List.
 Import ListNotations.
-Open Scope list_scope.
-
-Module Export StringSyntax. End StringSyntax.
+Open Scope string_scope.
 
 Definition var := string.
 Inductive lambda : Type :=
@@ -15,17 +10,17 @@ Inductive lambda : Type :=
 | C : lambda -> lambda -> lambda.
 
 
-Fixpoint is_mem_1 (variables: list var) (var:var) : bool :=
+Fixpoint is_mem_1 variables var : bool :=
 match variables with
-| [] => false
+| nil => false
 | hd::tl => if String.eqb hd var then true else is_mem_1 tl var
 end.
 
-Fixpoint sub_check_1 (lambda:lambda) (vars: list var) : bool :=
+Fixpoint sub_check_1 lambda vars : bool :=
 match lambda with
 | V x => is_mem_1 vars x
 | P x e => sub_check_1 e (x::vars)
-| C e1 e2 => (sub_check_1 e1 vars) && (sub_check_1 e2 vars)
+| C e1 e2 => andb (sub_check_1 e1 vars) (sub_check_1 e2 vars)
 end.
 
 Definition solution_1 (lambda:lambda) : bool := sub_check_1 lambda [].

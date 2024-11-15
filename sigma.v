@@ -4,13 +4,18 @@ Proof.
   intros.
   lia.
   Qed.
+
+Print Z.to_nat.
   
- Program Fixpoint solution_1 (f: nat -> Z) (a b: nat) {measure (b - a)}: Z :=
-  if Nat.ltb b a then 0
-  else if Nat.eqb a b then f a
+ Program Fixpoint solution_1 (f: Z -> Z) (a b: Z) {measure (Z.to_nat (b-a))}: Z :=
+  if Z.ltb b a then 0
+  else if Z.eqb a b then f a
   else f a + solution_1 f (a + 1) b.
 
   Next Obligation.
+  intuition.
+  
+
   
 
 Program Fixpoint solution_2 (f: nat -> nat) (a b : nat) {measure (b-a)} : nat :=
