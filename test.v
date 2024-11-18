@@ -20,6 +20,11 @@ Fixpoint natadd2 n1 n2 :=
    ZERO => n2
   | SUCC n =>  natadd2 n (SUCC n2)
   end.
+Fixpoint natadd3 n1 n2 :=
+match n2 with
+| ZERO => n1
+| SUCC n => SUCC (natadd3 n1 n)
+end.
 Theorem equal : forall arg0 arg1, natadd arg0 arg1 = natadd_ref arg0 arg1.
 Proof.
   induction arg0.
@@ -38,6 +43,8 @@ Proof.
 
 Theorem test: forall arg0 arg1, natadd arg0 arg1 = natadd_ref arg0 arg1.
 Proof.
+intros.
+generalize dependent arg1.
 (induction arg0).
 (simpl in *).
 reflexivity.
@@ -52,3 +59,26 @@ reflexivity.
 (simpl in *).
 reflexivity.
 Qed.
+
+Theorem sub4:forall arg0 arg1, natadd arg0 arg1 = natadd3 arg0 arg1.
+Proof.
+ intros.
+ generalize dependent arg0.
+ induction arg1.
+ simpl.
+ induction arg0.
+ simpl.
+ reflexivity.
+ simpl.
+ rewrite IHarg0.
+ reflexivity.
+ simpl.
+ intros.
+ rewrite <- IHarg1.
+ induction arg0.
+ simpl.
+ reflexivity.
+ simpl.
+ rewrite IHarg0.
+ reflexivity.
+ Qed.
