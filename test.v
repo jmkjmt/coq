@@ -43,42 +43,62 @@ Proof.
 
 Theorem test: forall arg0 arg1, natadd arg0 arg1 = natadd_ref arg0 arg1.
 Proof.
-intros.
-generalize dependent arg1.
-(induction arg0).
+  (induction arg0).
 (simpl in *).
 reflexivity.
-(simpl in *).
 (intros arg1).
-(simpl in *).
-(rewrite <- IHarg0 in *).
 (simpl in *).
 (destruct (arg0) eqn:arg0case).
 (simpl in *).
 reflexivity.
+(rewrite <- IHarg0 in *).
 (simpl in *).
 reflexivity.
 Qed.
 
+
+
 Theorem sub4:forall arg0 arg1, natadd arg0 arg1 = natadd3 arg0 arg1.
 Proof.
- intros.
- generalize dependent arg0.
- induction arg1.
- simpl.
- induction arg0.
- simpl.
- reflexivity.
- simpl.
- rewrite IHarg0.
- reflexivity.
- simpl.
- intros.
- rewrite <- IHarg1.
- induction arg0.
- simpl.
- reflexivity.
- simpl.
- rewrite IHarg0.
- reflexivity.
- Qed.
+  induction arg0.
+  simpl.
+  intros.
+  assert (lemma1: arg1 = natadd3 ZERO arg1).
+    generalize dependent arg1.
+    induction arg1.
+    simpl.
+    reflexivity.
+    simpl.
+    rewrite <- IHarg1.
+    reflexivity.
+  rewrite <- lemma1.
+  reflexivity.
+  simpl.
+  intros arg1.
+  rewrite IHarg0.
+  assert (lemma2: forall arg0 arg1, SUCC (natadd3 arg0 arg1) = natadd3 (SUCC arg0) arg1).
+  {
+    intros.
+    generalize dependent arg2.
+    induction arg3.
+    simpl.
+    reflexivity.
+    simpl.
+    intros arg2.
+    rewrite IHarg3.
+    reflexivity.
+  }
+  rewrite lemma2.
+  reflexivity.
+  Qed.
+
+  Theorem test1:forall arg0 arg1, natadd arg0 arg1 = natadd3 arg0 arg1.
+Proof.
+(induction arg0).
+(simpl in *).
+(intros arg1).
+(simpl in *).
+
+
+Qed.
+

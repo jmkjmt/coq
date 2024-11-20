@@ -109,11 +109,7 @@ Proof.
   unfold solution_1.
   simpl.
   unfold solution_1 in *.
-  rewrite IHm1.
-  rewrite IHm2.
-  rewrite <- IHm1.
-  rewrite <- IHm2.
-  rewrite lemma1.
+  rewrite lemma1 in *.
   rewrite lemma1.
   reflexivity.
   Qed.
