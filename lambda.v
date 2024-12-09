@@ -31,17 +31,17 @@ Fixpoint mem (v:var) (l:list var) : bool :=
   | hd::tl => if String.eqb hd v then true else mem v tl
   end.
 
-Fixpoint check_2 (ma:lambda) (li : list var) : bool :=
+Fixpoint check_2 (ma:lambda) (lst : list var) : bool :=
   match ma with
-  | P st k => check_2 k (st::li)
-  | C me1 me2 => (check_2 me1 li) && (check_2 me2 li)
-  | V na => mem na li
+  | V x => mem x lst
+  | P x e => check_2 e (x::lst)
+  | C e1 e2 => (check_2 e1 lst) && (check_2 e2 lst)
   end.
 Definition solution_2 (m: lambda) : bool :=
   match m with
-  | P st k => check_2 k [st]
-  | C me1 me2 => check_2 me1 [] && check_2 me2 []
-  | V na => false
+  | V x => false
+  | P x e => check_2 e [x]
+  | C e1 e2 => check_2 e1 [] && check_2 e2 []
   end.
 
 Fixpoint check_3 (ma: lambda) (li:list var) : bool :=
@@ -71,13 +71,7 @@ Definition solution_4 (m : lambda) : bool :=
   | V na => false
   end.
 
-Lemma l1 : forall m v, sub_check_1 m [v] = check_2 m [v].
-Proof.
-  induction m.
-  reflexivity.
-  simpl.
-  intros.
-  
+ 
 
 Theorem eq1 : forall (m : lambda), solution_1 m = solution_2 m.
 Proof.
@@ -151,25 +145,4 @@ Proof.
   rewrite lemma1.
   rewrite lemma1.
   reflexivity.
-  Qed.
-
-  
-
-
-
-
-
-  
-
-  
-
-  
-  
-
-
-
-
-
-  
-
-
+Qed.
