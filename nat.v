@@ -69,6 +69,14 @@ Fixpoint natmul7 (n1 n2:natural) : natural :=
   | SUCC n => natadd1 n1 (natmul7 n1 n)
   end.
 
+Fixpoint natmul_helper (n1 n2 result: natural) : natural :=
+  match n1 with
+  | ZERO => result
+  | SUCC n => natmul_helper n n2 (natadd1 n2 result)
+  end.
+Definition natmul_sub (n1 n2: natural) : natural :=
+  natmul_helper n1 n2 ZERO.
+
 Lemma l1: forall n2 : natural, ZERO = natmul6 ZERO n2.
 Proof.
   induction n2.
@@ -295,6 +303,28 @@ Proof.
   reflexivity.
   Qed.
 
+Theorem very_hard : forall n1 n2, natmul1 n1 n2 = natmul_sub n1 n2.
+Proof.
+  unfold natmul_sub.
+  induction n1.
+  simpl.
+  reflexivity.
+  simpl.
+  intros.
+  assert (forall n1 n2 n3, natmul_helper n1 n2 (natadd1 n2 n3) = natadd1 n2 (natmul_helper n1 n2 n3)).
+  {
+    induction n0.
+    simpl.
+    reflexivity.
+    simpl.
+    intros.
+    rewrite IHn0.
+    reflexivity.
+  }
+  rewrite H.
+  rewrite IHn1.
+  reflexivity.
+Qed.
   
   
 
