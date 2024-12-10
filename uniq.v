@@ -1,11 +1,11 @@
-Require Import ZArith.
+Require Import Arith.
 Require Import List.
 Require Import Bool.
-
-Fixpoint remove_elem_1 e lst:=
+Import ListNotations.
+Fixpoint remove_elem_1 (e:nat) (lst:list nat) : list nat :=
     match lst with
     | nil => nil
-    | hd::tl => if Z.eqb e hd then remove_elem_1 e tl else hd::(remove_elem_1 e tl)
+    | hd::tl => if Nat.eqb e hd then remove_elem_1 e tl else hd::(remove_elem_1 e tl)
     end.
 
 Fixpoint solution_1 lst :=
@@ -15,41 +15,42 @@ Fixpoint solution_1 lst :=
     end.
 
 
-Fixpoint is_in_3 (lst:list Z) (a:Z) : bool :=
+Fixpoint is_in_3 (lst:list nat) (a:nat) : bool :=
     match lst with
     | nil => false
-    | hd::tl => if Z.eqb a hd then true else is_in_3 tl a
+    | hd::tl => if Nat.eqb a hd then true else is_in_3 tl a
     end.
 
-Fixpoint unique_3 (lst1:list Z) (lst2: list Z) : list Z :=
+Fixpoint unique_3 (lst1:list nat) (lst2: list nat) : list nat :=
     match lst1 with
     | nil => lst2
     | hd::tl => if is_in_3 lst2 hd then unique_3 tl lst2 else unique_3 tl (lst2 ++ hd::nil)
     end.
 
-Definition solution_3 (lst:list Z) : list Z :=
+Definition solution_3 (lst:list nat) : list nat :=
     unique_3 lst nil.
 
-Fixpoint isNotIN_4 (lst: list Z) (c: Z) : bool :=
+
+Fixpoint isNotIN_4 (lst: list nat) (c: nat) : bool :=
     match lst with
     | nil => true
-    | hd::tl => if Z.eqb hd c then false else isNotIN_4 tl c
+    | hd::tl => if Nat.eqb hd c then false else isNotIN_4 tl c
     end.
 
-Fixpoint uniqSave_4 (l1:list Z) (l2:list Z) : list Z :=
+Fixpoint uniqSave_4 (l1:list nat) (l2:list nat) : list nat :=
     match l1 with
     | nil => l2
     | hd::tl => if isNotIN_4 l2 hd then uniqSave_4 tl (l2++hd::nil) else uniqSave_4 tl l2
     end.
-Definition solution_4 (lst: list Z) : list Z := uniqSave_4 lst nil.
+Definition solution_4 (lst: list nat) : list nat := uniqSave_4 lst nil.
 
-(* Fixpoint drop_2 (lst:list Z) (n:Z): list Z :=
+(* Fixpoint drop_2 (lst:list nat) (n:nat): list nat :=
     match lst with
     | nil => nil
-    | hd::tl => if Z.eqb hd n then drop_2 tl n else hd :: (drop_2 tl n)
+    | hd::tl => if Nat.eqb hd n then drop_2 tl n else hd :: (drop_2 tl n)
     end.
 
-Fixpoint solution_2 (lst:list Z) : list Z :=
+Fixpoint solution_2 (lst:list nat) : list nat :=
     match lst with
     | nil => nil
     | hd::tl => hd :: solution_2 (drop_2 tl hd)
@@ -72,10 +73,10 @@ Proof.
             discriminate.
             simpl.
             intros.
-            case (Z.eqb a0 a1) eqn:E1.
+            case (Nat.eqb a0 a1) eqn:E1.
             reflexivity.
             apply IHlst0.
-            rewrite Z.eqb_sym in E1.
+            rewrite Nat.eqb_sym in E1.
             rewrite E1 in H.
             apply H.
         }
@@ -89,14 +90,14 @@ Proof.
             reflexivity.
             intros.
             simpl.
-            case (Z.eqb a0 a1) eqn:E1.
+            case (Nat.eqb a0 a1) eqn:E1.
             unfold is_in_3 in H.
-            rewrite Z.eqb_sym in E1.
+            rewrite Nat.eqb_sym in E1.
             rewrite E1 in H.
             discriminate.
             apply IHlst0.
             unfold is_in_3 in H.
-            rewrite Z.eqb_sym in E1.
+            rewrite Nat.eqb_sym in E1.
             rewrite E1 in H.
             apply H.
         }
@@ -111,4 +112,5 @@ Proof.
     simpl.
     apply lemma1.
     Qed.
+
 
