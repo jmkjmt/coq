@@ -26,6 +26,7 @@ Fixpoint unique_3 (lst1:list nat) (lst2: list nat) : list nat :=
     | nil => lst2
     | hd::tl => if is_in_3 lst2 hd then unique_3 tl lst2 else unique_3 tl (lst2 ++ hd::nil)
     end.
+    (* unique_3's first argument is decreasing but second argument is not decreasing!*)
 
 Definition solution_3 (lst:list nat) : list nat :=
     unique_3 lst nil.
@@ -112,6 +113,16 @@ Proof.
     simpl.
     apply lemma1.
     Qed.
+
+Theorem sol1sol3 : forall lst, solution_1 lst = solution_3 lst.
+Proof.
+    unfold solution_3.
+    induction lst.
+    reflexivity.
+    simpl in*.
+    rewrite IHlst.
+    
+
 
 Theorem test:forall n lst, is_in_3 (unique_3 lst [n]) n = true.
 Proof.
