@@ -128,5 +128,68 @@ Proof.
     rewrite IHlst.
     reflexivity.
     simpl.
-    
+    (* grow infinitely..*)
+    assert(forall lst1 lst2 n, is_in_3 (unique_3 lst1 ([n]++lst2)) n = true).
+    {
+        assert (forall n: nat , forall lst, n :: lst = ([n]++lst)).
+        {
+            intros.
+            generalize dependent n.
+            induction lst0.
+            simpl.
+            reflexivity.
+            simpl.
+            reflexivity.
+        }
+        induction lst1.
+        simpl.
+        intros.
+        rewrite Nat.eqb_refl.
+        reflexivity.
+        simpl.
+        intros.
+        case (a0 =? n0) eqn:E1.
+        rewrite H.
+        rewrite IHlst1.
+        reflexivity.
+        case (is_in_3 lst2 a0) eqn:E2.
+        rewrite H.
+        rewrite IHlst1.
+        reflexivity.
+        rewrite H.
+        rewrite IHlst1.
+        reflexivity.
+    }
+    assert (forall n1 : nat, forall n2, [n1;n2] = [n1]++[n2]).
+    {
+        intros.
+        simpl.
+        reflexivity.
+    }
+    rewrite H0.
+    rewrite H.
+    reflexivity.
+    Qed.
+    (* assert (forall lst1 lst2 n, is_in_3 lst1 n = true -> is_in_3 (unique_3 lst2 lst1) n = true ).
+    {
+        intros.
+        generalize dependent n0.
+        generalize dependent lst1.
+        induction lst2.
+        intros.
+        simpl.
+        rewrite H.
+        reflexivity.
+        simpl.
+        intros.
+        case (is_in_3 lst1 a0) eqn:E1.
+        rewrite IHlst2.
+        reflexivity.
+        rewrite H.
+        reflexivity.
+        rewrite IHlst2.
+        reflexivity. *)
+        
+        
+    }
     
