@@ -113,4 +113,20 @@ Proof.
     apply lemma1.
     Qed.
 
-
+Theorem test:forall n lst, is_in_3 (unique_3 lst [n]) n = true.
+Proof.
+    intros.
+    generalize dependent n.
+    induction lst.
+    simpl.
+    intros.
+    rewrite Nat.eqb_refl.
+    reflexivity.
+    simpl.
+    intros.
+    case (Nat.eqb a n) eqn:E.
+    rewrite IHlst.
+    reflexivity.
+    simpl.
+    
+    
