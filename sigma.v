@@ -1,11 +1,16 @@
 Require Import Program Arith ZArith Lia.
-Theorem th1: forall a b :nat, forall a0 b0: nat, b0 - a0 < b - a -> 0 < b - a.
-Proof.
-  intros.
-  lia.
-  Qed.
 
-Print Z.to_nat.
+Print Z.
+Print positive.
+Print Z.add.
+Print Z.ltb.
+Print Z.eqb.
+
+
+Fixpoint sol1 (f: int -> int) (a b : int) : int :=
+  if lte b a then POS ZERO
+  else if a = b then f a
+  else int_plus (f a) (sol1 f (int_plus a (POS (SUCC ZERO))) b).
   
  Program Fixpoint solution_1 (f: Z -> Z) (a b: Z) {measure (Z.to_nat (b-a))}: Z :=
   if Z.ltb b a then 0

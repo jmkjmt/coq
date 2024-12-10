@@ -44,12 +44,12 @@ Fixpoint uniqSave_4 (l1:list nat) (l2:list nat) : list nat :=
     end.
 Definition solution_4 (lst: list nat) : list nat := uniqSave_4 lst nil.
 
-(* Fixpoint drop_2 (lst:list nat) (n:nat): list nat :=
+Fixpoint drop_2 (lst:list nat) (n:nat): list nat :=
     match lst with
     | nil => nil
     | hd::tl => if Nat.eqb hd n then drop_2 tl n else hd :: (drop_2 tl n)
     end.
-
+(* 
 Fixpoint solution_2 (lst:list nat) : list nat :=
     match lst with
     | nil => nil
