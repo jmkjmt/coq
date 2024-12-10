@@ -1,4 +1,5 @@
 Require Import Program.
+Require Import Setoid.
 Inductive natural : Type :=
  ZERO : natural
 | SUCC : natural -> natural.
@@ -311,6 +312,51 @@ Proof.
   reflexivity.
   simpl.
   intros.
+  rewrite IHn1.
+  assert (forall n1 n2 n3, natadd1 n3 (natmul_helper n1 n2 ZERO) = natmul_helper n1 n2 (natadd1 n3 ZERO)).
+  {
+    induction n4.
+    simpl.
+    reflexivity.
+    simpl.
+    rewrite IHn4.
+    assert (forall n1 n2 n3, SUCC (natmul_helper n1 n2 n3) = natmul_helper n1 n2 (SUCC n3)).
+    {
+      induction n5.
+      simpl.
+      reflexivity.
+      simpl.
+      intros.
+      rewrite IHn5.
+      assert (forall n1 n2, SUCC (natadd1 n1 n2) = natadd1 n1 (SUCC n2)).
+      {
+        induction n8.
+        simpl.
+        reflexivity.
+        simpl.
+        intros.
+        rewrite IHn8.
+        reflexivity.
+      }
+      rewrite H.
+      reflexivity.
+    }
+    rewrite H.
+    reflexivity.
+  }
+  rewrite H.
+  reflexivity.
+  (* assert (forall n, natadd1 n ZERO = n).
+  {
+    induction n.
+    simpl.
+    reflexivity.
+    simpl.
+    rewrite IHn.
+    reflexivity.
+  } 
+  rewrite H.
+  
   assert (forall n1 n2 n3, natmul_helper n1 n2 (natadd1 n2 n3) = natadd1 n2 (natmul_helper n1 n2 n3)).
   {
     induction n0.
@@ -323,8 +369,16 @@ Proof.
   }
   rewrite H.
   rewrite IHn1.
-  reflexivity.
+  reflexivity. *)
 Qed.
+  
+Theorem test1213: forall n1, natadd4 ZERO n1 = n1.
+Proof.
+  induction n1.
+  reflexivity.
+  (* setoid_rewrite <- IHn1 at 2. *)
+  rewrite <- IHn1.
+  simpl.
   
   
 
