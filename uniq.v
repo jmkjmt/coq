@@ -119,8 +119,14 @@ Proof.
     unfold solution_3.
     induction lst.
     reflexivity.
-    simpl in*.
+    simpl in *.
+    induction lst.
+    simpl.
+    reflexivity.
+    
     rewrite IHlst.
+    unfold unique_3.
+    
     
 
 
