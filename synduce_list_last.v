@@ -55,6 +55,16 @@ Definition reprNew zipper : Nat :=
 
 Definition mainNew zipper : Nat :=
     reprNew zipper.
+Lemma l : forall b : BTree, tf1 b = sum b.
+Proof.
+    induction b.
+    simpl.
+    reflexivity.
+    simpl.
+    rewrite IHb1.
+    rewrite IHb2.
+    reflexivity.
+Qed.
 
 Lemma l1 : forall b : BTree, plus (tf1 b) Zero = sum b.
 Proof.
@@ -82,13 +92,30 @@ Theorem equiv : forall inp0: Zipper , main inp0 = mainNew inp0.
 Proof.
     assert(forall n m b , plus n (plus (tf1 b) m) = plus m (plus n (sum b))).
     {
+        assert(forall n m, plus n (Succ m) = Succ (plus n m)).
+        {
+            induction n.
+            simpl.
+            reflexivity.
+            simpl.
+            intros.
+            rewrite IHn.
+            reflexivity.
+        }
         induction n.
         simpl.
         induction m.
         simpl.
         apply l1.
         simpl.
-
+        intros.
+        rewrite <- IHm.
+        apply H.
+        simpl in *.
+        intros.
+        rewrite IHn.
+        rewrite <- H.
+        reflexivity.        
     }
     unfold main.
     unfold sum.
@@ -100,5 +127,36 @@ Proof.
     reflexivity.
     simpl.
     rewrite IHinp0.
-    
+    rewrite H.
+    reflexivity.
+    simpl.
+    rewrite IHinp0.
+    assert(forall n m b, plus n (plus m (tf1 b)) = plus m (plus n (sum b))).
+    {
+        induction n0.
+        simpl.
+        intros.
+        rewrite l.
+        reflexivity.
+        intros.
+        simpl.
+        rewrite l.
+        rewrite IHn0.
+        assert(forall n m, plus n (Succ m) = Succ (plus n m)).
+        {
+            induction n1.
+            simpl.
+            reflexivity.
+            simpl.
+            intros.
+            rewrite IHn1.
+            reflexivity.
+        }
+        rewrite H0.
+        reflexivity.
+    }
+    simpl.
+    rewrite H0.
+    reflexivity.
+Qed.
 
