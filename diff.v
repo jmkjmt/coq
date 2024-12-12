@@ -22,17 +22,17 @@ Fixpoint map (f: aexp -> string -> aexp) (l:list aexp) (x : string) : list aexp 
 Fixpoint diff (e:aexp) (x:string) : aexp :=
     match e with
     | Const n => Const 0
-    | Var a => if negb (String.eqb a x) then Const 0 else Const 1
-    | Power a n => if Z.ltb n  0 then Var "ERROR"
+    | Var a => (if negb (String.eqb a x) then Const 0 else Const 1)
+    | Power a n => (if Z.ltb n  0 then Var "ERROR"
                     else if (Z.eqb n  0) || negb (String.eqb a x) then Const 0
-                    else Times [Const n; (Power a (n-1))]
-    | Times l => match l with
+                    else Times [Const n; (Power a (n-1))])
+    | Times l => (match l with
                 | [] => Var "ERROR"
                 | [hd] => diff hd x
                 | hd ::tl => Sum [Times ((diff hd x)::tl); Times [hd; diff (Times tl) x]]
-    end
-    |Sum l => match l with
+    end)
+    |Sum l => (match l with
             | [] => Var "ERROR"
             | _ => Sum (map diff l x)
-    end
+            end)
     end.
