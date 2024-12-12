@@ -11,16 +11,16 @@ Require Import Program Arith ZArith Lia.
     Open Scope Z_scope.
     -   *)
   
- Program Fixpoint solution_1 (f: nat -> nat) (a b: nat) {measure (b - a)}: nat :=
-  match b - a with
+ (* Fixpoint solution_1 (f: nat -> nat) (c a: nat) {struct a}: nat :=
+  match c with
   | 0 => f a
-  | _ => f a + solution_1 f (a+1) b
+  | _ => f a + solution_1 f (c + a - 1) (a + 1)
   end.
 
   Next Obligation.
   Proof. 
      auto with *.
-    Qed.
+    Qed. *)
 
 
 (* Program Fixpoint solution_2 (f: nat -> nat) (a b : nat) {measure (b-a)} : nat :=
@@ -59,6 +59,9 @@ Proof.
     rewrite H1.
     induction c.
     rewrite Nat.add_0_r.
+
+    unfold solution_1.
+    
     
     
     
