@@ -56,6 +56,10 @@ Proof.
         lia.
         apply H.
      }
+    rewrite H1.
+    induction c.
+    rewrite Nat.add_0_r.
+    
 
 
 Program Fixpoint aux (a:nat) (b:nat) (f:nat->nat) (acc:nat) : nat :=
