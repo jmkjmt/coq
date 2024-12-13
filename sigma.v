@@ -20,6 +20,7 @@ CoFixpoint solution_1 (f: Z -> Z) (a b: Z): Z :=
 
 CoFixpoint solution_2 (f: Z -> Z) (a b : Z) : Z :=
     if (Z.ltb b a) then 0 
+    else if Z.eqb a b then f b
     else (f b) + solution_2 f a (b-1).
 
  
@@ -30,32 +31,29 @@ CoFixpoint solution_2 (f: Z -> Z) (a b : Z) : Z :=
     | _ => f b + solution_2 f a (b-1)
     end. *)
 
-
+Open Scope Z_scope.
 
 Theorem eq: forall f a b, a <= b -> solution_1 f a b = solution_2 f a b.
 Proof.
-    intro f.
     intros.
     pose (c := b - a).
     assert (H1: b = a + c).
     { 
         unfold c.
-        assert (H2:= Nat.add_sub_assoc).
+        assert (H2:= Z.add_sub_assoc).
         specialize H2 with a b a.
         rewrite H2.
-        assert (H3:= Nat.add_sub_swap).
+        assert (H3:= Z.add_sub_swap).
         specialize H3 with a b a.
         rewrite H3.
         lia.
-        lia.
-        apply H.
      }
     rewrite H1.
     induction c.
-    rewrite Nat.add_0_r.
-
+    rewrite Z.add_0_r in *.
     unfold solution_1.
-    
+    unfold solution_1.
+    Eval compute in solution_1 f a a.
     
     
     
