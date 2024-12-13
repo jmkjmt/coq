@@ -1,16 +1,5 @@
 Require Import Program Arith ZArith Lia.
- (* Program Fixpoint solution_1 (f: Z -> Z) (a b: Z) {measure (Z.to_nat (b-a + 1))}: Z :=
-  if Z.ltb b a then 0
-  else if Z.eqb a b then f a
-  else f a + solution_1 f (a + 1) b.
 
-  Next Obligation.
-  Proof. 
-    intros.
-    apply Z2Nat.inj_lt.
-    Open Scope Z_scope.
-    -   *)
-  
  (* Fixpoint solution_1 (f: nat -> nat) (c a: nat) {struct a}: nat :=
   match c with
   | 0 => f a
@@ -22,21 +11,26 @@ Require Import Program Arith ZArith Lia.
      auto with *.
     Qed. *)
 
+Unset Guard Checking.
 
-(* Program Fixpoint solution_2 (f: nat -> nat) (a b : nat) {measure (b-a)} : nat :=
-    if (Nat.ltb b a) then 0 
+CoFixpoint solution_1 (f: Z -> Z) (a b: Z): Z :=
+  if Z.ltb b a then 0
+  else if Z.eqb a b then f a
+  else f a + solution_1 f (a + 1) b.
+
+CoFixpoint solution_2 (f: Z -> Z) (a b : Z) : Z :=
+    if (Z.ltb b a) then 0 
     else (f b) + solution_2 f a (b-1).
-  *)
 
-Program Fixpoint solution_2 (f: nat -> nat) (a: nat) (b : nat) {measure (b - a)}: nat :=
+ 
+
+(* Program Fixpoint solution_2 (f: nat -> nat) (a: nat) (b : nat) {measure (b - a)}: nat :=
     match b - a with
     | 0 => f b
     | _ => f b + solution_2 f a (b-1)
-    end.
-Next Obligation.
-Proof.
-    auto with *.
-Qed.
+    end. *)
+
+
 
 Theorem eq: forall f a b, a <= b -> solution_1 f a b = solution_2 f a b.
 Proof.
