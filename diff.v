@@ -51,8 +51,10 @@ Program Fixpoint diff (e:aexp) (x:string) {measure (rank e)} : aexp :=
     end)
     |Sum l => (match l with
             | [] => Var "ERROR"
+            | [hd] => diff hd x
+            | hd :: tl => Sum [diff hd x; diff (Sum tl) x]
             (* | _ => Sum (map (fun e => diff e x) l x) *)
-            | _ => Sum (map (fun a => diff a x) l)
+            (* | _ => Sum (map (fun a => diff a x) l) *)
             end)
     end.
 Next Obligation.
@@ -115,6 +117,62 @@ Proof.
 
 Next Obligation.
 Proof.
+    simpl.
+    rewrite Nat.add_0_r.
+    apply Nat.lt_succ_diag_r.
+    Qed.
+
+Next Obligation.
+Proof.
+    simpl.
+    Search (S (_ + _) = _ + S _).
+    rewrite plus_n_Sm.
+    rewrite <- Nat.add_0_r at 1.
+    rewrite <- Nat.add_lt_mono_l.
+    assert (forall n, 0 < S n).
+    {
+        induction n0.
+        firstorder.
+        firstorder.
+    }
+    apply H.
+Qed.
+Next Obligation.
+    simpl.
+    rewrite plus_n_Sm.
+    rewrite Nat.add_comm.
+    rewrite <- Nat.add_0_r at 1.
+    rewrite <- Nat.add_lt_mono_l.
+    assert (forall e, rank e > 0).
+    {
+        induction e.
+        simpl.
+        firstorder.
+        simpl.
+        firstorder.
+        simpl.
+        firstorder.
+        simpl.
+        assert (forall n, 0 < S n).
+        {
+            induction n0.
+            firstorder.
+            firstorder.
+        }
+        apply H.
+        simpl.
+        assert (forall n, 0 < S n).
+        {
+            induction n0.
+            firstorder.
+            firstorder.
+        }
+        apply H.
+    }
+    apply H.
+    Qed.
+Next Obligation.
+
     
     
     
