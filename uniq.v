@@ -187,6 +187,7 @@ Proof.
     rewrite H.
     reflexivity.
     Qed.
+    Abort.
     (* assert (forall lst1 lst2 n, is_in_3 lst1 n = true -> is_in_3 (unique_3 lst2 lst1) n = true ).
     {
         intros.
@@ -206,7 +207,22 @@ Proof.
         reflexivity.
         rewrite IHlst2.
         reflexivity. *)
-        
-        
-    }
+Theorem q: forall n lst, remove_elem_1 n lst = drop_2 lst n.
+Proof.
+    induction lst.
+    simpl.
+    reflexivity.
+    simpl.
+    case (n =? a) eqn:E.
+    Search (_ =? _ = true).
+    rewrite Nat.eqb_eq in E.
+    rewrite <- E.
+    rewrite Nat.eqb_refl.
+    rewrite IHlst.
+    reflexivity.
+    rewrite Nat.eqb_sym in E.
+    rewrite E.
+    rewrite IHlst.
+    reflexivity.
+    Qed.
     

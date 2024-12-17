@@ -376,12 +376,72 @@ Theorem test1213: forall n1, natadd4 ZERO n1 = n1.
 Proof.
   induction n1.
   reflexivity.
-  (* setoid_rewrite <- IHn1 at 2. *)
-  rewrite <- IHn1.
+  setoid_rewrite <- IHn1 at 2.
   simpl.
+  (* assert ( forall n1 , natadd4 (SUCC ZERO) n1 = SUCC (natadd4 ZERO n1)).
+  {
+    induction n0.
+    simpl.
+    reflexivity.
+    simpl.
+    intros.
+    rewrite IHn0.
+    reflexivity.
+   
+  } *)
+  assert (forall n1 n2, natadd4 (SUCC n2) n1 = SUCC (natadd4 n2 n1)).
+  {
+    induction n0.
+    simpl.
+    reflexivity.
+    simpl.
+    intros.
+    setoid_rewrite IHn0 at 1.
+    reflexivity.
+  }
+  setoid_rewrite H at 1.
+  reflexivity.
+Qed.
   
   
 
+Theorem test: forall n1 n2, natmul1 n1 n2 = natmul_sub n1 n2.
+Proof.
+  unfold natmul_sub.
+  induction n1.
+  simpl.
+  reflexivity.
+  simpl.
+  intros.
+  rewrite IHn1.
+  assert (forall n1 n2, natadd1 n2 (natmul_helper n1 n2 ZERO) = natmul_helper n1 n2 (natadd1 n2 ZERO)).
+  {
+    induction n3.
+    simpl.
+    reflexivity.
+    simpl.
+    assert (forall n1 n2 n3, natmul_helper n1 n2 n3 = natmul_helper n2 n1 n3).
+    {
+      induction n4.
+      simpl.
+      induction n4.
+      simpl.
+      reflexivity.
+      simpl.
+      apply IHn4.
+      simpl.
+      intros.
+      rewrite IHn4.
+      generalize dependent n5.
+      generalize dependent n6.
+      induction n5.
+      simpl.
+      reflexivity.
+      simpl.
+            
+    }
+    
+  }
 
 
 

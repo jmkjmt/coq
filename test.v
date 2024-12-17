@@ -1,45 +1,50 @@
-Inductive lst : Type :=
-  | Nil : lst
-  | Cons : nat -> lst -> lst.
+Require Import Program Arith ZArith Lia.
 
-Inductive queue : Type :=
-  | Queue : lst -> lst -> queue.
 
-Fixpoint len (l : lst) : nat :=
-match l with
-  | Nil => 0
-  | Cons a l1 => 1 + (len l1)
-end.
+Program Fixpoint solution_1 (f: nat -> nat) (a b: nat) {measure (b - a)}: nat :=
+  match b - a with
+  | 0 => f a
+  | _ => f a + solution_1 f (a + 1) b
+  end.
+Next Obligation.
+Proof. 
+   auto with *.
+  Qed.
 
-Definition qlen (q : queue) : nat :=
-match q with
-  | Queue l1 l2 => (len l1) + (len l2)
-end. 
-Fixpoint app (l : lst) (m: lst): lst :=
-match l with
-  | Nil => m
-  | Cons a l1 => Cons a (app l1 m)
-end.
+Program Fixpoint solution_2 (f: nat -> nat) (a b: nat) {measure (b - a)}: nat :=
+  match b - a with
+  | 0 => f b
+  | _ => f b + solution_2 f a (b - 1)
+  end.
+Next Obligation.
+Proof. 
+   auto with *.
+  Qed.
 
-Fixpoint rev (l: lst): lst :=
-match l with
-  | Nil => Nil
-  | Cons a l1 => app (rev l1) (Cons a Nil)
-end.
+Lemma H1: forall a b, b >= a -> (S b) - a = S (b - a).
+Proof.
+  intros.
+  pose (c := b - a).
+  replace (b - a) with (c) by lia.
+  replace (S c) with (c + 1) by lia.
+  replace (S b) with (b + 1) by lia.
+  replace c with (b - a) by lia.
+  lia.
+Qed.
 
-Fixpoint leb (n m : nat) : bool :=
-match (n, m) with
-  | (0, _) => true
-  | (S n', S m') => leb n' m'
-  | _ => false
-end. 
+Theorem eq: forall f a b, a <= b -> solution_1 f a b = solution_2 f a b.
+Proof.
+  intros.
+  cbn.
+  induction b.
+  intros.
+  destruct a.
+  simpl.
+  reflexivity.
+  lia.
+  Abort.
+  
+  
+  (* replace (S b - a) with (S (b - a)) by (rewrite (H1 a b)). *)
 
-Definition amortizeQueue (l1 l2 : lst) : queue :=
-  if leb (len l2)  (len l1) then Queue l1 l2
-  else Queue (app l1 (rev l2)) Nil.
 
-Definition qpush (q : queue) (n : nat) : queue :=
-match q with
-  | Queue l1 l2 => amortizeQueue l1 (Cons n l2)
-end.
-Theorem queue_push : forall q n, qlen (qpush q n) = 1 + (qlen q).
