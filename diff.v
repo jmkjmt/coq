@@ -166,11 +166,10 @@ Proof.
     intros.
     unfold diff.
     unfold diff_func.
-    rewrite fix_sub_eq in *.
-    simpl.
+    Search (Fix_sub).
     rewrite fix_sub_eq.
     simpl.
-    fold diff_func.
+    f_equal.
     
 
     
