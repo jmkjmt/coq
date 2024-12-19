@@ -4,6 +4,7 @@ Require Import Ascii.
 Require Import Bool.
 Require Import List.
 Require Import Program.
+Require Import Lia.
 Import ListNotations.
 Module Export StringSyntax. End StringSyntax.
 
@@ -58,25 +59,26 @@ Program Fixpoint diff (e:aexp) (x:string) {measure (rank e)} : aexp :=
             end)
     end.
 Next Obligation.
+Admitted.
+Next Obligation.
+Admitted.
+Next Obligation.
+Admitted.
+Next Obligation.
+Admitted.
+Next Obligation.
+Admitted.
+Next Obligation.
+Admitted.
+(* Next Obligation.
 Proof.
-    simpl.
-    rewrite Nat.add_0_r.
-    apply Nat.lt_succ_diag_r.
+    cbn.
+    lia.
     Qed.
 Next Obligation.
 Proof.
-    simpl.
-    rewrite <- Nat.add_succ_r .
-    Search (_ < _ + _).    
-    rewrite <- Nat.add_0_r at 1.
-    rewrite <- Nat.add_lt_mono_l with (p := rank hd).
-    assert (forall n, 0 < S n).
-    {
-        induction n0.
-        firstorder.
-        firstorder.
-    }
-    apply H.
+    cbn.
+    lia.
 Qed.
 Next Obligation.
 Proof.
@@ -108,7 +110,6 @@ Proof.
         apply H.
     }
     rewrite <- Nat.add_succ_r.
-    Search ( _ + _  = _ + _).
     rewrite Nat.add_comm.
     rewrite <- Nat.add_0_r at 1.
     rewrite <- Nat.add_lt_mono_l.
@@ -118,24 +119,13 @@ Proof.
 Next Obligation.
 Proof.
     simpl.
-    rewrite Nat.add_0_r.
-    apply Nat.lt_succ_diag_r.
+    lia.
     Qed.
 
 Next Obligation.
 Proof.
     simpl.
-    Search (S (_ + _) = _ + S _).
-    rewrite plus_n_Sm.
-    rewrite <- Nat.add_0_r at 1.
-    rewrite <- Nat.add_lt_mono_l.
-    assert (forall n, 0 < S n).
-    {
-        induction n0.
-        firstorder.
-        firstorder.
-    }
-    apply H.
+    lia.
 Qed.
 Next Obligation.
     simpl.
@@ -146,46 +136,52 @@ Next Obligation.
     assert (forall e, rank e > 0).
     {
         induction e.
-        simpl.
-        firstorder.
-        simpl.
-        firstorder.
-        simpl.
-        firstorder.
-        simpl.
-        assert (forall n, 0 < S n).
-        {
-            induction n0.
-            firstorder.
-            firstorder.
-        }
-        apply H.
-        simpl.
-        assert (forall n, 0 < S n).
-        {
-            induction n0.
-            firstorder.
-            firstorder.
-        }
-        apply H.
+        all: simpl; lia.
     }
     apply H.
-    Qed.
-Next Obligation.
+Qed. *)
+Program Fixpoint bla (n:nat) {measure n} :=
+match n with
+| 0 => 0
+| S n' => S (bla n')
+end.
+Lemma obvious: forall n, bla n = n.
+Proof.
+intro n ; induction n.
+ reflexivity.
+ unfold bla ; rewrite fix_sub_eq ; simpl ; fold (bla n).
+ rewrite IHn ; reflexivity.
+
+(* This can probably be automated using Ltac *)
+ intros x f g Heq.
+  destruct x.
+  reflexivity.
+  f_equal.
+  apply Heq.
+Qed.
+
+
+Theorem eq: forall e x, diff e x = diff (Sum [e]) x.
+Proof.
+    intros.
+    unfold diff.
+    unfold diff_func.
+    rewrite fix_sub_eq in *.
+    simpl.
+    rewrite fix_sub_eq.
+    simpl.
+    fold diff_func.
+    
 
     
     
-    
-    
 
     
 
-
-
-    (* Search (_ < _ + _). *)
-
-
-(* Theorem eq: forall e x, diff e x = diff Sum [e] x. *)
-
+    Print fix_sub_eq.
 
     
+
+    f_equal.
+    intros.
+    Print f_equal.
