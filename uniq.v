@@ -1,6 +1,6 @@
 Require Import Arith.
 Require Import List.
-Require Import Bool.
+Require Import Bool Program.
 Import ListNotations.
 Fixpoint remove_elem_1 (e:nat) (lst:list nat) : list nat :=
     match lst with
@@ -50,12 +50,14 @@ Fixpoint drop_2 (lst:list nat) (n:nat): list nat :=
     | nil => nil
     | hd::tl => if Nat.eqb hd n then drop_2 tl n else hd :: (drop_2 tl n)
     end.
-(* 
-Fixpoint solution_2 (lst:list nat) : list nat :=
+
+Program Fixpoint solution_2 (lst:list nat) {measure 0} : list nat :=
     match lst with
     | nil => nil
     | hd::tl => hd :: solution_2 (drop_2 tl hd)
-    end. *)
+    end.
+Next Obligation.
+Admitted.
 Theorem eq: forall lst, solution_3 lst = solution_4 lst.
 Proof.
     assert(lemma1: forall lst1 lst2, unique_3 lst1 lst2 = uniqSave_4 lst1 lst2).
@@ -226,3 +228,11 @@ Proof.
     reflexivity.
     Qed.
     
+Theorem equiv: forall lst, solution_1 lst = solution_2 lst.
+Proof.
+    induction lst.
+    simpl.
+    cbn.
+    reflexivity.
+    simpl.
+    unfold solution_2.
