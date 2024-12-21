@@ -403,7 +403,61 @@ Proof.
   reflexivity.
 Qed.
   
-
-
-
-
+Theorem test1214: forall n1 n2, natmul1 n1 n2 = natmul5 n1 n2.
+Proof.
+  induction n1.
+  simpl.
+  assert (forall n2, natmul5 ZERO n2 = ZERO).
+  {
+    induction n2.
+    simpl.
+    reflexivity.
+    simpl.
+    rewrite IHn2.
+    reflexivity.
+  }
+  intros.
+  rewrite H.
+  reflexivity.
+  intros.
+  simpl.
+  rewrite IHn1.
+  assert (forall n1 n2, natadd1 n2 (natmul5 n1 n2) = natmul5 (SUCC n1) n2).
+  {
+    intros.
+    generalize dependent n0.
+    induction n3.
+    simpl.
+    reflexivity.
+    intros.
+    simpl.
+    rewrite <- IHn3.
+    remember (natmul5 n0 n3) as n.
+    assert (forall n1 n2 n3, SUCC (natadd1 n3 (natadd2 n2 n1))= natadd2 (SUCC n2) (natadd1 n3 n1)).
+    {
+      induction n6.
+      simpl.
+      assert (forall n1 n2, SUCC (natadd2 n1 n2) = natadd2 (SUCC n1) n2).
+      {
+        intros.
+        generalize dependent n6.
+        induction n7.
+        simpl.
+        reflexivity.
+        simpl.
+        intros.
+        rewrite IHn7.
+        reflexivity.
+      }
+      rewrite H.
+      reflexivity.
+      simpl.
+      rewrite IHn6.
+      reflexivity.
+    }
+    rewrite H.
+    reflexivity.
+  }
+  rewrite H.
+  reflexivity.
+Qed.
