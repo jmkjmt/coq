@@ -435,7 +435,54 @@ Proof.
     remember (natmul5 n0 n3) as n.
     assert (forall n1 n2 n3, SUCC (natadd1 n3 (natadd2 n2 n1))= natadd2 (SUCC n2) (natadd1 n3 n1)).
     {
+      (* induction n4.
+      simpl.
+      intros.
+      generalize dependent n4.
+      assert(forall n1 n2, SUCC (natadd1 n1 n2) = natadd2 (SUCC n2) (natadd1 n1 ZERO)).
+      {
+        induction n4.
+        simpl.
+        reflexivity.
+        intros.
+        simpl.
+        rewrite IHn4.
+        reflexivity.
+      }
+      intros.
+      rewrite H.
+      reflexivity.
+      simpl.
+      intros.
+      generalize dependent n5.
       induction n6.
+      simpl.
+      assert (forall n5 n4, SUCC (SUCC (natadd2 n5 n4)) = SUCC (natadd2 (SUCC n5) n4)).
+      {
+        induction n6.
+        simpl.
+        reflexivity.
+        simpl.
+        rewrite IHn6.
+        reflexivity.
+      }
+      intros.
+      rewrite H.
+      reflexivity.
+      simpl.
+      intros.
+      rewrite IHn6.
+      reflexivity. 
+    }
+    rewrite H.
+    reflexivity.
+  }
+  rewrite H.
+  reflexivity. *)
+
+      
+      induction n6.
+      (* why split on n6? *)
       simpl.
       assert (forall n1 n2, SUCC (natadd2 n1 n2) = natadd2 (SUCC n1) n2).
       {
