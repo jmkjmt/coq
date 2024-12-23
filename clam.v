@@ -7,79 +7,6 @@ From Coq Require Import Program.
 
 Import ListNotations.
 
-Inductive aexp : Set :=
-| Con (n : Z)
-| Var (s : string)
-| Pow (s : string) (n : Z)
-| Sum (xs : list aexp)
-| Mul (xs : list aexp).
-
-Fixpoint rank (x : aexp) : nat :=
-  match x with
-  | Con _
-  | Var _
-  | Pow _ _ => 1
-  | Sum xs
-  | Mul xs  => 1 +
-      (fix ranks xs :=
-        match xs with
-        | []        => 0
-        | x' :: xs' =>
-            rank x' + ranks xs'
-        end
-      ) xs
-  end.
-
-Program Fixpoint diff s x {measure (rank x)} : aexp :=
-  match x with
-  | (* D_s n := 0 *)
-    Con _ => Con 0
-  | (* D_s a := a <> s ? 0 : 1 *)
-    Var a =>
-      Con (if negb (String.eqb a s) then 0 else 1)
-  | (* D_s a**n := (n >= 0) ->
-        n = 0 || a <> s ? 0 : n*(a**(n-1)) *)
-    Pow a n =>
-      if Z.ltb n 0 then Var "ERROR"
-      else if Z.eqb n 0 ||
-        negb (String.eqb a s) then Con 0
-      else Mul [Con n; Pow a (n - 1)]
-  | (* D_s Sum_i xi :=
-        D_s x0 + D_s Sum_{i>0} xi *)
-    Sum xs =>
-      match xs with
-      | []        => Con 0
-      | x' :: xs' =>
-          Sum [diff s x'; diff s (Sum xs')]
-      end
-  | (* D_s Mul_i xi :=
-        D_s x0 * Mul_{i>0} xi +
-        x0 * D_s Mul_{i>0} xi *)
-    Mul xs =>
-      match xs with
-      | [] => Con 0
-      | x' :: xs' =>
-          Sum [
-            Mul [diff s x'; Mul xs'];
-            Mul [x'; diff s (Mul xs')]
-          ]
-      end
-  end.
-Next Obligation.
-  cbn; lia.
-Defined.
-Next Obligation.
-  destruct x'.
-  all: cbn; lia.
-Defined.
-Next Obligation.
-  destruct x'.
-  all: cbn; lia.
-Defined.
-Next Obligation.
-  destruct x'.
-  all: cbn; lia.
-Defined.
 Lemma l1 : forall x : list nat, x++[] = x.
 Proof.
   induction x.
@@ -260,6 +187,7 @@ Fixpoint qrevaflat (t: tree) (lst: list nat) : list nat :=
   | Leaf => lst
   | Node l n r => qrevaflat l (n::qrevaflat r lst)
   end.
+ 
 
 Theorem clam_28 : forall t : tree, revflat t = qrevaflat t [].
 Proof.
@@ -438,10 +366,236 @@ Proof. *)
   
 Theorem clam_78 : forall x y, rev (qreva x (rev y)) = y ++ x.
 Proof.
-  
+  assert (forall y : list nat, rev (rev y) = y).
+  {
+    induction y.
+    reflexivity.
+    assert (forall l1 l2 : list nat, rev (l1 ++ l2) = rev l2 ++ rev l1).
+    {
+      induction l2.
+      simpl.
+      intros.
+      rewrite app_nil_r.
+      reflexivity.
+      intros.
+      simpl.
+      rewrite IHl2.
+      rewrite app_assoc.
+      reflexivity.
+    }
+    simpl.
+    rewrite H.
+    simpl.
+    rewrite IHy.
+    reflexivity.
+  }
+  induction x.
+  simpl.
+  intros.
+  rewrite H.
+  rewrite app_nil_r.
+  reflexivity.
+  simpl.
+  intros.
+  assert (forall (y : list nat) a, a:: rev y = rev (y++[a])).
+  {
+    simpl.
+    induction y0.
+    simpl.
+    reflexivity.
+    simpl.
+    intros.
+    rewrite <- IHy0.
+    simpl.
+    reflexivity.
+  }
+  rewrite H0.
+  rewrite IHx.
+  rewrite <- app_assoc.
+  simpl.
+  reflexivity.
+Qed.
 
+Theorem calm_79: forall x y : list nat, rev ((rev x) ++ y) = (rev y) ++ x.
+Proof.
+  induction x.
+  simpl.
+  intros.
+  rewrite app_nil_r.
+  reflexivity.
+  simpl.
+  intros.
+  rewrite <- app_assoc.
+  rewrite IHx.
+  simpl.
+  rewrite <- app_assoc.
+  reflexivity.
+Qed.
 
+Theorem clam_80 : forall x y : list nat, rev ( rev x ++ rev y) = y ++ x.
+Proof.
+  induction x.
+  simpl.
+  intros.
+  rewrite app_nil_r.
+  assert (forall y : list nat, rev (rev y) = y).
+  {
+    induction y0.
+    reflexivity.
+    assert (forall l1 l2 : list nat, rev (l1 ++ l2) = rev l2 ++ rev l1).
+    {
+      induction l2.
+      simpl.
+      intros.
+      rewrite app_nil_r.
+      reflexivity.
+      intros.
+      simpl.
+      rewrite IHl2.
+      rewrite app_assoc.
+      reflexivity.
+    }
+    simpl.
+    rewrite H.
+    simpl.
+    rewrite IHy0.
+    reflexivity.
+  }
+  rewrite H.
+  reflexivity.
+  simpl.
+  intros.
+  rewrite <- app_assoc.
+  assert (forall a (y : list nat), [a]++ rev y = rev (y++[a])).
+  {
+    simpl.
+    induction y0.
+    simpl.
+    reflexivity.
+    simpl.
+    rewrite <- IHy0.
+    simpl.
+    reflexivity.
+  }
+  rewrite H.
+  rewrite IHx.
+  rewrite <- app_assoc.
+  simpl.
+  reflexivity.
+Qed.
 
-  
+Theorem clam_83 : forall x y : list nat, rotate (length x) (x ++ y) = y ++ x.
+Proof.
+  induction x.
+  simpl.
+  intros.
+  rewrite app_nil_r.
+  reflexivity.
+  simpl.
+  intros.
+  rewrite <- app_assoc.
+  rewrite IHx.
+  rewrite <- app_assoc.
+  simpl.
+  reflexivity.
+Qed.
 
+Fixpoint mult n m : nat :=
+  match n with
+  | 0 => 0
+  | S n' => m + mult n' m
+  end.
 
+Fixpoint fac n : nat :=
+  match n with
+  | 0 => 1
+  | S n' => mult n (fac n')
+  end.
+
+Fixpoint qfac n m : nat :=
+  match n with
+  | 0 => m
+  | S n' => qfac n' (mult m n)
+  end.
+Theorem clema_84 : forall x y : nat , mult (fac x) y = qfac x y.
+Proof.
+  induction x.
+  simpl.
+  intros.
+  lia.
+  intros.
+  simpl.
+  rewrite <- IHx.
+  induction y.
+  simpl.
+  assert (forall n, mult n 0 = 0).
+  {
+    induction n.
+    simpl.
+    reflexivity.
+    simpl.
+    rewrite IHn.
+    reflexivity.
+  }
+  rewrite H.
+  rewrite H.
+  reflexivity.
+  simpl.
+  assert (forall x y, mult x (S y) = x + mult x y).
+  {
+    induction x0.
+    simpl.
+    reflexivity.
+    simpl.
+    intros.
+    rewrite IHx0.
+    lia.
+  }
+  rewrite H.
+  rewrite IHy.
+  rewrite H with (y := (x + mult y (S x))).
+  assert (forall x y z, mult x (y+z) = mult x y + mult x z).
+  {
+    induction x0.
+    simpl.
+    reflexivity.
+    simpl.
+    intros.
+    rewrite IHx0.
+    lia.
+  }
+  rewrite H0.
+  rewrite Nat.add_assoc.
+  assert (forall x y, mult x y = mult y x).
+  {
+    induction x0.
+    simpl.
+    induction y0.
+    simpl.
+    reflexivity.
+    simpl.
+    rewrite <- IHy0.
+    reflexivity.
+    simpl.
+    intros.
+    rewrite H.
+    rewrite IHx0.
+    reflexivity.
+  }
+  rewrite H1.
+  reflexivity.
+Qed.
+Fixpoint exp x y : nat := 
+  match y with
+  | 0 => 1
+  | S y' => mult (exp x y') x
+  end.
+
+Fixpoint qexp x y z : nat :=
+  match y with
+  | 0 => z
+  | S y' => qexp x y' (mult z x)
+  end.
+
+(* Theorem clam_86 : forall x y z, mult (exp x y) z = qexp x y z.
+Proof. *)

@@ -231,8 +231,13 @@ Proof.
 Theorem equiv: forall lst, solution_1 lst = solution_2 lst.
 Proof.
     induction lst.
-    simpl.
     cbn.
     reflexivity.
     simpl.
     unfold solution_2.
+    rewrite fix_sub_eq.
+    simpl.
+    rewrite fix_sub_eq.
+    simpl.
+    unfold solution_2.
+    
