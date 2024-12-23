@@ -333,63 +333,115 @@ Proof.
   reflexivity.
 Qed.
 
+(* clam_31: 증가하는 변수를 추적해야함! & 변수 설정의 순서 *)
 Theorem clam_31 : forall x : list nat, qreva (qreva x []) [] = x.
 Proof.
   induction x.
   simpl.
   reflexivity.
+  assert(forall x1 x2, qreva ( qreva x2 x1) [] = (rev x1) ++ x2).
+  {
+    intros.
+    generalize dependent x1.
+    induction x2.
+    simpl.
+    intros.
+    rewrite app_nil_r.
+    induction x1.
+    reflexivity.
+    simpl.
+    induction x1.
+    reflexivity.
+    simpl.
+    assert(forall x1 x2, qreva x1 x2 = rev x1 ++ x2).
+    {
+      induction x0.
+      simpl.
+      reflexivity.
+      simpl.
+      intros.
+      rewrite <- app_assoc.
+      assert ([a2]++x2 = a2::x2).
+      {
+        simpl.
+        reflexivity.
+      }
+      rewrite H.
+      rewrite IHx2.
+      reflexivity.
+    }
+    rewrite H.
+    rewrite <- app_assoc.
+    reflexivity.
+    intros.
+    simpl.
+    rewrite IHx2.
+    simpl.
+    rewrite <- app_assoc.
+    reflexivity.
+  }
   simpl.
+  rewrite H.
+  simpl.
+  reflexivity.
+Qed.
+
+Theorem clam_32 : forall x, rotate (length x) x = x.
+Proof.
   induction x.
   simpl.
   reflexivity.
   simpl.
-  assert(forall x l1 , qreva (qreva x l1) [] = qreva l1 [] ++ x).
+  assert (forall x1 x2, rotate (length x1) (x1 ++ x2) = x2 ++ x1).
   {
-    induction x0.
+    intros.
+    generalize dependent x2.
+    induction x1.
     simpl.
     intros.
-    rewrite l1.
+    rewrite app_nil_r.
     reflexivity.
     intros.
     simpl.
-    assert (forall l1 l2 a x, qreva l1 (l2++[a]) ++ x = qreva l1 l2 ++ [a] ++ x).
+    rewrite <- app_assoc.
+    assert (x2++a0::x1 = x2++[a0]++x1).
     {
-      induction l2.
       simpl.
-      intros.
-      assert (a2 :: x1 = [a2] ++ x1).
-      {
-        simpl.
-        reflexivity.
-      }
-      rewrite H.
-      rewrite <- app_assoc.
       reflexivity.
-      intros.
-      simpl.
-      remember (a2 :: l0) as l4.
-      Search ( _ :: _ ++ _).
-      rewrite app_comm_cons.
-      rewrite <- Heql4.
-      rewrite IHl2.
-      assert (a3::x1= [a3]++x1).
-      {
-        simpl.
-        reflexivity.
-      }
-      rewrite H.
-      reflexivity.
-  }
-  intros.
-  simpl.
-  assert (a1::x0 = [a1]++x0).
-  {
-    simpl.
+    }
+    rewrite H.
+    rewrite IHx1.
+    rewrite <- app_assoc.
     reflexivity.
   }
-  rewrite H0.
-  rewrite <- H.
+  rewrite H.
   simpl.
+  reflexivity.
+Qed.
 
+Fixpoint mem n lst : bool :=
+  match lst with
+  | [] => false
+  | a :: tl => if n =? a then true else mem n tl
+  end.
+
+(* Theorem clam_49: forall x y, mem x (sort y) = true -> mem x y = true.
+Proof. *)
+
+Fixpoint count n lst : nat :=
+  match lst with
+  | [] => 0
+  | a :: tl => if n =? a then 1 + count n tl else count n tl
+  end.
+(* Theorem clam_50: forall x y, count x (sort y) = count x y.
+Proof. *)
+  
+Theorem clam_78 : forall x y, rev (qreva x (rev y)) = y ++ x.
+Proof.
+  
+
+
+
+  
 
 
