@@ -116,18 +116,72 @@ Proof.
     apply lemma1.
     Qed.
 
+Fixpoint mk_remove lst1 lst2 :=
+    match lst2 with
+    | [] => lst1
+    | hd::tl => remove_elem_1 hd (mk_remove lst1 tl)
+    end.
+
+
+Theorem thm1 : forall lst1 lst2,  lst1 ++ mk_remove lst2 lst1 = unique_3 lst2 lst1.
+Proof.
+    induction lst1.
+    simpl.
+    
+    
 Theorem sol1sol3 : forall lst, solution_1 lst = solution_3 lst.
 Proof.
+    assert (forall a0 lst, remove_elem_1 a0 (remove_elem_1 a0 lst) = remove_elem_1 a0 lst).
+    {
+        clear.
+        intros.
+        generalize dependent a0.
+        induction lst.
+        simpl.
+        reflexivity.
+        simpl.
+        intros.
+        case (a0 =? a) eqn:E.
+        rewrite IHlst.
+        reflexivity.
+        simpl.
+        rewrite E.
+        rewrite IHlst.
+        reflexivity.
+    }
     unfold solution_3.
-    induction lst.
-    reflexivity.
-    simpl in *.
     induction lst.
     simpl.
     reflexivity.
+    simpl.
+    induction lst.
+    reflexivity.
+    simpl.
+    case (a=?a0) eqn:E.
+    rewrite Nat.eqb_eq in E.
+    rewrite E in *.
+    simpl in *.
+    rewrite Nat.eqb_refl.
+    rewrite <- IHlst.
     
-    rewrite IHlst.
-    unfold unique_3.
+    rewrite H.
+    reflexivity.
+    rewrite Nat.eqb_sym in E.
+    rewrite E.
+    induction lst.
+    simpl.
+    reflexivity.
+    simpl.
+    case (a0 =? a1) eqn:E1.
+    rewrite Nat.eqb_eq in E1.
+    rewrite <- E1 in *.
+    rewrite E in *.
+    rewrite Nat.eqb_refl.
+    rewrite H.
+    Abort.
+
+    
+    
     
     
 
@@ -141,7 +195,7 @@ Proof.
     intros.
     rewrite Nat.eqb_refl.
     reflexivity.
-    simpl.
+    simpl. 
     intros.
     case (Nat.eqb a n) eqn:E.
     rewrite IHlst.
