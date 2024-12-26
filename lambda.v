@@ -167,7 +167,38 @@ Proof.
   simpl.
   intros.
   case (mem v lst) eqn:E.
-  
+  assert(forall m v lst, mem v lst = true -> sub_check_1 m (v::lst)= check_3 m lst).
+  {
+    clear.
+    induction m.
+    intros.
+    simpl.
+    case (v0 =? v) eqn:E.
+    rewrite String.eqb_eq in E.
+    rewrite E in *.
+    rewrite H.
+    reflexivity.
+    apply mem13.
+    intros.
+    simpl.
+    case (mem v lst) eqn:E.
+    assert (sub_check_1 m (v::(v0::lst)) = check_3 m (v0::lst)).
+    {
+      apply IHm.
+      simpl.
+      case (v0 =? v) eqn:E1.
+      reflexivity.
+      exact E.
+    }
+    rewrite H0.
+    assert (sub_check_1 m (v0 ::lst) = check_3 m lst).
+    {
+      apply IHm.
+      exact H.
+    }
+    rewrite <- H1.
+    (* asdfasdfasdfasdf *)
+  }
 
 Theorem eq3: forall (m: lambda), solution_1 m = solution_3 m.
 Proof.
