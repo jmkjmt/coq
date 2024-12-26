@@ -376,7 +376,7 @@ Theorem test1213: forall n1, natadd4 ZERO n1 = n1.
 Proof.
   induction n1.
   reflexivity.
-  setoid_rewrite <- IHn1 at 2.
+  rewrite <- IHn1 at 2.
   (* simpl natadd4 in IHn1 at 1. *)
   (* assert ( forall n1 , natadd4 (SUCC ZERO) n1 = SUCC (natadd4 ZERO n1)).
   {
@@ -396,10 +396,11 @@ Proof.
     reflexivity.
     simpl.
     intros.
-    setoid_rewrite IHn0 at 1.
+    rewrite IHn0 at 1.
     reflexivity.
   }
-  setoid_rewrite H at 1.
+  rewrite <- H at 1.
+  simpl.
   reflexivity.
 Qed.
   

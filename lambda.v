@@ -20,7 +20,7 @@ Fixpoint sub_check_1 lambda vars : bool :=
 match lambda with
 | V x => is_mem_1 vars x
 | P x e => sub_check_1 e (x::vars)
-| C e1 e2 => andb (sub_check_1 e1 vars) (sub_check_1 e2 vars)
+| C e1 e2 => (sub_check_1 e1 vars) && (sub_check_1 e2 vars)
 end.
 
 Definition solution_1 (lambda:lambda) : bool := sub_check_1 lambda [].
@@ -146,3 +146,50 @@ Proof.
   rewrite lemma1.
   reflexivity.
 Qed.
+Fixpoint mk_lst (v:string) (n:nat) : list string :=
+  match n with
+  | 0 => [v]
+  | S n' => v::(mk_lst v n')
+  end.
+Lemma mem13 : forall v lst, is_mem_1 lst v = mem v lst.
+Proof.
+  induction lst.
+  reflexivity.
+  simpl.
+  rewrite IHlst.
+  reflexivity.
+Qed.
+Lemma check_13 : forall m lst, sub_check_1 m lst = check_3 m lst.
+Proof.
+  induction m.
+  simpl.
+  apply mem13.
+  simpl.
+  intros.
+  case (mem v lst) eqn:E.
+  
+
+Theorem eq3: forall (m: lambda), solution_1 m = solution_3 m.
+Proof.
+  induction m.
+  unfold solution_1.
+  unfold solution_3.
+  reflexivity.
+  unfold solution_1.
+  unfold solution_3.
+  simpl.
+  induction m.
+  simpl.
+  reflexivity.
+  simpl.
+  case (v=?v0) eqn:E.
+  rewrite String.eqb_eq in E.
+  rewrite E in *.
+  assert (forall m v n, sub_check_1 m (mk_lst v n) = check_3 m [v]).
+  {
+    clear.
+    induction n.
+    simpl.
+    
+  
+  }

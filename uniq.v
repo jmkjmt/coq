@@ -285,13 +285,24 @@ Proof.
 Theorem equiv: forall lst, solution_1 lst = solution_2 lst.
 Proof.
     induction lst.
-    cbn.
     reflexivity.
     simpl.
+    induction lst.
+    simpl.
+    cbn.
+    rewrite F_unfold.
+    reflexivity.
+    simpl.
+    case (a=?a0) eqn:E.
+    rewrite Nat.eqb_eq in E.
+    rewrite E in *.
     unfold solution_2.
-    rewrite fix_sub_eq.
     simpl.
     rewrite fix_sub_eq.
     simpl.
-    unfold solution_2.
+    fold solution_2.
+    rewrite Nat.eqb_refl.
+    
+
+
     
