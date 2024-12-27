@@ -166,45 +166,65 @@ Proof.
   simpl.
   intros.
   case (mem v lst) eqn:E.
-  rewrite IHm.
-  assert (forall m v lst1 lst2, mem v lst2 = true -> check_3 m (lst1++[v]++lst2) = check_3 m (lst1++lst2)).
+  rewrite <- IHm.
+  assert (forall m v lst1 lst2, mem v lst1 = true -> sub_check_1 m (lst2++ v::lst1) = sub_check_1 m (lst2++lst1)).
   {
     clear.
-    intros.
-    generalize dependent lst1.
-    induction lst2.
-    intros.
-    simpl in H.
-    discriminate.
+    induction m.
     simpl.
-    case (String.eqb a v) eqn:E.
+    intros.
+    induction lst2.
+    simpl.
+    case (String.eqb v0 v) eqn:E.
+    rewrite mem13.
     rewrite String.eqb_eq in E.
     rewrite E in *.
+    rewrite H.
+    reflexivity.
+    reflexivity.
+    simpl.
+    case (String.eqb a v) eqn:E.
+    reflexivity.
+    rewrite IHlst2.
+    reflexivity.
+    simpl.
     intros.
-    assert (lst1++v::v::lst2 = (lst1++[v])++[v]++lst2).
+    remember (v::lst2) as l.
+    assert (v::lst2 ++ v0::lst1 = (v::lst2) ++ v0::lst1).
+    reflexivity.
+    rewrite H0.
+    assert (v::lst2 ++ lst1 = (v::lst2) ++ lst1).
+    reflexivity.
+    rewrite H1.
+    apply IHm.
+    apply H.
+    intros.
+    simpl.
+    assert (sub_check_1 m1 (lst2 ++ v :: lst1) = sub_check_1 m1 (lst2 ++ lst1)).
     {
-      clear.
-      rewrite <- app_assoc.
-      simpl.
-      reflexivity.
+      apply IHm1.
+      apply H.
+    }
+    assert (sub_check_1 m2 (lst2 ++ v :: lst1) = sub_check_1 m2 (lst2 ++ lst1)).
+    {
+      apply IHm2.
+      apply H.
     }
     rewrite H0.
-    assert (lst1 ++ v:: lst2 = (lst1 ++ [v]) ++ lst2).
-    {
-      clear.
-      rewrite <- app_assoc.
-      simpl.
-      reflexivity.
-    }
     rewrite H1.
-    apply IHlst2.
-    simpl in H.
-    rewrite String.eqb_refl in H.
-    
-
-
+    reflexivity.    
   }
-  
+  specialize (H m v lst []).
+  simpl in H.
+  apply H.
+  apply E.
+  apply IHm.
+  intros.
+  simpl.
+  rewrite IHm1.
+  rewrite IHm2.
+  reflexivity.
+Qed.
 
   
 
