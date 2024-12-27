@@ -1,7 +1,6 @@
 Require Import String.
 Require Import List.
 Import ListNotations.
-Open Scope string_scope.
 
 Definition var := string.
 Inductive lambda : Type :=
@@ -167,38 +166,47 @@ Proof.
   simpl.
   intros.
   case (mem v lst) eqn:E.
-  assert(forall m v lst, mem v lst = true -> sub_check_1 m (v::lst)= check_3 m lst).
+  rewrite IHm.
+  assert (forall m v lst1 lst2, mem v lst2 = true -> check_3 m (lst1++[v]++lst2) = check_3 m (lst1++lst2)).
   {
     clear.
-    induction m.
     intros.
+    generalize dependent lst1.
+    induction lst2.
+    intros.
+    simpl in H.
+    discriminate.
     simpl.
-    case (v0 =? v) eqn:E.
+    case (String.eqb a v) eqn:E.
     rewrite String.eqb_eq in E.
     rewrite E in *.
-    rewrite H.
-    reflexivity.
-    apply mem13.
     intros.
-    simpl.
-    case (mem v lst) eqn:E.
-    assert (sub_check_1 m (v::(v0::lst)) = check_3 m (v0::lst)).
+    assert (lst1++v::v::lst2 = (lst1++[v])++[v]++lst2).
     {
-      apply IHm.
+      clear.
+      rewrite <- app_assoc.
       simpl.
-      case (v0 =? v) eqn:E1.
       reflexivity.
-      exact E.
     }
     rewrite H0.
-    assert (sub_check_1 m (v0 ::lst) = check_3 m lst).
+    assert (lst1 ++ v:: lst2 = (lst1 ++ [v]) ++ lst2).
     {
-      apply IHm.
-      exact H.
+      clear.
+      rewrite <- app_assoc.
+      simpl.
+      reflexivity.
     }
-    rewrite <- H1.
-    (* asdfasdfasdfasdf *)
+    rewrite H1.
+    apply IHlst2.
+    simpl in H.
+    rewrite String.eqb_refl in H.
+    
+
+
   }
+  
+
+  
 
 Theorem eq3: forall (m: lambda), solution_1 m = solution_3 m.
 Proof.
