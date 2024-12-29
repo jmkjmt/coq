@@ -230,25 +230,9 @@ Qed.
 
 Theorem eq3: forall (m: lambda), solution_1 m = solution_3 m.
 Proof.
-  induction m.
   unfold solution_1.
   unfold solution_3.
+  intros.
+  rewrite check_13.
   reflexivity.
-  unfold solution_1.
-  unfold solution_3.
-  simpl.
-  induction m.
-  simpl.
-  reflexivity.
-  simpl.
-  case (v=?v0) eqn:E.
-  rewrite String.eqb_eq in E.
-  rewrite E in *.
-  assert (forall m v n, sub_check_1 m (mk_lst v n) = check_3 m [v]).
-  {
-    clear.
-    induction n.
-    simpl.
-    
-  
-  }
+Qed.
