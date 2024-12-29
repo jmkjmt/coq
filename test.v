@@ -13,3 +13,4 @@ match n2 with
 | ZERO => n1
 | SUCC n => SUCC (natadd2 n1 n)
 end.
+
