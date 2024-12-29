@@ -154,8 +154,9 @@ Proof.
     exact H0.
     simpl in *.
     intros.
-    assert (remove_elem_1 a (mk_remove lst2 lst1) = mk_remove (remove_elem_1 a lst2) lst1).
+    assert (forall lst1 lst2 a, AllDistinct lst1 -> solution_1 lst2 = unique_3 lst2 [] -> remove_elem_1 a (mk_remove lst2 lst1) = mk_remove (remove_elem_1 a lst2) lst1).
     {
+        clear.
         assert (forall a lst2, remove_elem_1 a (remove_elem_1 a (lst2)) = remove_elem_1 a (lst2)).
         {
             clear.
@@ -175,11 +176,42 @@ Proof.
             rewrite IHlst2.
             reflexivity.            
         }
-        induction lst1.
-        simpl.
+        assert (forall a0 a lst, a0 =? a = false -> remove_elem_1 a0 (remove_elem_1 a lst) = remove_elem_1 a (remove_elem_1 a0 lst)).
+        {
+            intros.
+            generalize dependent a0.
+            generalize dependent a.
+            induction lst.
+            intros.
+            simpl.
+            reflexivity.
+            simpl.
+            intros.
+            simpl in *.
+            case (a0 =? a) eqn:E1.
+            rewrite Nat.eqb_eq in E1.
+            rewrite E1 in *.
+            rewrite H0.
+            simpl.
+            rewrite Nat.eqb_refl.
+            apply IHlst.
+            exact H0.
+            simpl.
+            case (a1 =? a) eqn:E2.
+            apply IHlst.
+            exact H0.
+            simpl.
+            rewrite E1.
+            assert (remove_elem_1 a1 (remove_elem_1 a0 lst) = remove_elem_1 a0 (remove_elem_1 a1 lst)).
+            {
+                apply IHlst.
+                exact H0.
+            }
+            rewrite H1.
+            reflexivity.            
+        }    
         assert(forall a lst, remove_elem_1 a (solution_1 lst) = solution_1 (remove_elem_1 a lst)).
         {
-            clear a IHlst1 lst2 H H0.
             intros.
             generalize dependent a.
             induction lst.
@@ -188,10 +220,87 @@ Proof.
             simpl.
             intros.
             case (a0 =? a) eqn:E.
-            
-            
+            rewrite Nat.eqb_eq in E.
+            rewrite E in *.
+            rewrite H.
+            rewrite IHlst.
+            reflexivity.
+            simpl.
+            rewrite IHlst.
+            rewrite <- IHlst.
+            rewrite <- IHlst.
+            assert (remove_elem_1 a0 (remove_elem_1 a (solution_1 lst)) = remove_elem_1 a (remove_elem_1 a0 (solution_1 lst))).
+            {
+                apply H0.
+                exact E.
+            }
+            rewrite H1.
+            reflexivity.            
         }
+        intros.
+        generalize dependent a.
+        generalize dependent lst2.
+        induction lst1.
+        simpl.
+        intros.
+        rewrite H1.
+        reflexivity.
+        simpl.
+        intros.
+        case (a0 =? a) eqn:E.
+        rewrite Nat.eqb_eq in E.
+        rewrite E in *.
+        rewrite H.
+        rewrite <- IHlst1.
+        rewrite H.
+        reflexivity.
+        inversion H2.
+        apply H7.
+        apply H3.
+        rewrite <- IHlst1.
+        rewrite H0.
+        reflexivity.
+        apply E.
+        inversion H2.
+        apply H7.
+        apply H3.
     }   
+    rewrite H1.
+    rewrite IHlst1.
+    assert (forall a lst1 lst2, AllDistinct (a::lst1) -> a::unique_3 (remove_elem_1 a lst2) lst1 = unique_3 lst2 (a::lst1)).
+    {
+        clear.
+        intros.
+        generalize dependent a.
+        generalize dependent lst1.
+        induction lst2.
+        intros.
+        simpl.
+        reflexivity.
+        simpl.
+        intros.
+        case (a0 =? a) eqn:E.
+        rewrite Nat.eqb_eq in E.
+        rewrite E in *.
+        rewrite Nat.eqb_refl.
+        apply IHlst2.
+        apply H.
+        rewrite Nat.eqb_sym in E.
+        rewrite E.
+        simpl.
+        case (is_in_3 lst1 a) eqn:E1.
+        apply IHlst2.
+        apply H.
+        apply IHlst2.
+        inversion H.
+        subst.
+        constructor.
+        induction lst1.
+        simpl.
+        Search (_ =? _ false).
+        
+        
+    }
     
 Theorem sol1sol3 : forall lst, solution_1 lst = solution_3 lst.
 Proof.
