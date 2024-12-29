@@ -226,8 +226,6 @@ Proof.
   reflexivity.
 Qed.
 
-  
-
 Theorem eq3: forall (m: lambda), solution_1 m = solution_3 m.
 Proof.
   unfold solution_1.
