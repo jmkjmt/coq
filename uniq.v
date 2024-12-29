@@ -156,17 +156,6 @@ Proof.
     intros.
     assert (remove_elem_1 a (mk_remove lst2 lst1) = mk_remove (remove_elem_1 a lst2) lst1).
     {
-        inversion H.
-        subst.
-        induction lst1.
-        simpl.
-        induction lst2.
-        simpl.
-        reflexivity.
-        simpl.
-        case (a=? a0) eqn:E.
-        rewrite Nat.eqb_eq in E.
-        rewrite <- E in *.
         assert (forall a lst2, remove_elem_1 a (remove_elem_1 a (lst2)) = remove_elem_1 a (lst2)).
         {
             clear.
@@ -186,9 +175,22 @@ Proof.
             rewrite IHlst2.
             reflexivity.            
         }
-        (* asdfasdfadsf *)
-        rewrite H1.
-        reflexivity.
+        induction lst1.
+        simpl.
+        assert(forall a lst, remove_elem_1 a (solution_1 lst) = solution_1 (remove_elem_1 a lst)).
+        {
+            clear a IHlst1 lst2 H H0.
+            intros.
+            generalize dependent a.
+            induction lst.
+            simpl.
+            reflexivity.
+            simpl.
+            intros.
+            case (a0 =? a) eqn:E.
+            
+            
+        }
     }   
     
 Theorem sol1sol3 : forall lst, solution_1 lst = solution_3 lst.
