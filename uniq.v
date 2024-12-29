@@ -297,7 +297,11 @@ Proof.
         constructor.
         induction lst1.
         simpl.
-        Search (_ =? _ false).
+        rewrite Nat.eqb_neq in E.
+        firstorder.
+        simpl.
+        simpl in *.
+        
         
         
     }
