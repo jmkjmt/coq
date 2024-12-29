@@ -118,16 +118,78 @@ Proof.
 
 Fixpoint mk_remove lst1 lst2 :=
     match lst2 with
-    | [] => lst1
+    | [] => solution_1 lst1
     | hd::tl => remove_elem_1 hd (mk_remove lst1 tl)
     end.
 
-
-Theorem thm1 : forall lst1 lst2,  lst1 ++ mk_remove lst2 lst1 = unique_3 lst2 lst1.
+Inductive AllDistinct {A : Type} : list A -> Prop :=
+| Dist_nil : AllDistinct []
+| Dist_cons : forall x l, 
+    ~ In x l ->
+    AllDistinct l -> 
+    AllDistinct (x :: l).
+Lemma AllDistinct_tail {A : Type} : 
+  forall (a : A) (lst : list A),
+    AllDistinct (a :: lst) -> AllDistinct lst.
+Proof.
+  intros a lst H.
+  inversion H as [| x l H_not_in H_dist H_eq].
+  subst.
+  exact H_dist.
+Qed.
+Lemma AllDistinct_head {A:Type}:
+    forall (a:A) (lst: list A),
+    AllDistinct (a::lst) -> ~ In a lst.
+Proof.
+    intros a lst H.
+    inversion H as [| x l H_not_in H_dist H_eq].
+    subst.
+    exact H_not_in.
+Qed.
+Theorem thm1 : forall lst1 lst2, AllDistinct lst1 -> solution_1 lst2 = unique_3 lst2 [] -> lst1 ++ mk_remove lst2 lst1 = unique_3 lst2 lst1.
 Proof.
     induction lst1.
     simpl.
-    
+    intros.
+    exact H0.
+    simpl in *.
+    intros.
+    assert (remove_elem_1 a (mk_remove lst2 lst1) = mk_remove (remove_elem_1 a lst2) lst1).
+    {
+        inversion H.
+        subst.
+        induction lst1.
+        simpl.
+        induction lst2.
+        simpl.
+        reflexivity.
+        simpl.
+        case (a=? a0) eqn:E.
+        rewrite Nat.eqb_eq in E.
+        rewrite <- E in *.
+        assert (forall a lst2, remove_elem_1 a (remove_elem_1 a (lst2)) = remove_elem_1 a (lst2)).
+        {
+            clear.
+            intros.
+            generalize dependent a.
+            induction lst2.
+            simpl.
+            reflexivity.
+            simpl.
+            intros.
+            case (a0 =? a) eqn:E.
+            rewrite Nat.eqb_eq in E.
+            rewrite E in*.
+            apply IHlst2.
+            simpl.
+            rewrite E.
+            rewrite IHlst2.
+            reflexivity.            
+        }
+        (* asdfasdfadsf *)
+        rewrite H1.
+        reflexivity.
+    }   
     
 Theorem sol1sol3 : forall lst, solution_1 lst = solution_3 lst.
 Proof.
