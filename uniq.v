@@ -148,40 +148,210 @@ Proof.
 Qed.
 Theorem thm1 : forall lst1 lst2, AllDistinct lst1 -> solution_1 lst2 = unique_3 lst2 [] -> lst1 ++ mk_remove lst2 lst1 = unique_3 lst2 lst1.
 Proof.
-Abort.
-    
-Theorem sol1sol3 : forall lst, solution_1 lst = solution_3 lst.
-Proof.
-    assert (forall a0 lst, remove_elem_1 a0 (remove_elem_1 a0 lst) = remove_elem_1 a0 lst).
+    induction lst1.
+    simpl.
+    intros.
+    apply H0.
+    simpl.
+    intros.
+    assert (forall a lst1 lst2, AllDistinct (a::lst1) -> solution_1 lst2 = unique_3 lst2 [] -> remove_elem_1 a (mk_remove lst2 lst1) = mk_remove (remove_elem_1 a lst2) lst1).
     {
         clear.
         intros.
-        generalize dependent a0.
-        induction lst.
+        generalize dependent a.
+        generalize dependent lst1.
+        assert (forall a a0 lst, a0 =? a = false -> remove_elem_1 a0 (remove_elem_1 a lst) = remove_elem_1 a (remove_elem_1 a0 lst)).
+        {
+            clear.
+            intros.
+            generalize dependent a.
+            generalize dependent a0.
+            induction lst.
+            simpl.
+            reflexivity.
+            simpl.
+            intros.
+            case (a1 =? a) eqn:E.
+            rewrite Nat.eqb_eq in E.
+            rewrite E in *.
+            rewrite H.
+            simpl.
+            rewrite Nat.eqb_refl.
+            apply IHlst.
+            apply H.
+            simpl.
+            case (a0 =? a) eqn:E1.
+            apply IHlst.
+            apply H.
+            simpl.
+            rewrite E.
+            rewrite IHlst.
+            reflexivity.
+            apply H.
+        }
+        induction lst1.
+        simpl.
+        intros.
+        assert(forall a lst, remove_elem_1 a (solution_1 lst) = solution_1 (remove_elem_1 a lst)).
+        {
+            clear lst2 H0 a H1.
+            intros.
+            generalize dependent a.
+            induction lst.
+            simpl.
+            reflexivity.
+            simpl.
+            intros.
+            case (a0 =? a) eqn:E.
+            rewrite Nat.eqb_eq in E.
+            rewrite E in *.
+            assert (forall a lst, remove_elem_1 a (remove_elem_1 a (lst)) = remove_elem_1 a (lst)).
+            {
+                clear.
+                intros.
+                generalize dependent a.
+                induction lst.
+                intros.
+                reflexivity.
+                simpl.
+                intros.
+                case (a0 =? a) eqn:E.
+                rewrite Nat.eqb_eq in E.
+                rewrite E in *.
+                rewrite IHlst.
+                reflexivity.
+                simpl.
+                rewrite E.
+                rewrite IHlst.
+                reflexivity. 
+            }
+            rewrite H0.
+            rewrite IHlst.
+            reflexivity.
+            simpl.
+            rewrite <- IHlst.
+            rewrite H.
+            reflexivity.
+            apply E.
+        }
+        rewrite H2.
+        reflexivity.
+        simpl.
+        intros.
+        rewrite <- IHlst1.
+        rewrite H.
+        reflexivity.
+        clear lst2 H0 H IHlst1.
+        inversion H1.
+        subst.
+        simpl in H2.
+        firstorder.
+        case (a0 =? a) eqn:E.
+        rewrite Nat.eqb_eq in E.
+        rewrite E in *.
+        firstorder.
+        reflexivity.
+        inversion H1.
+        subst.
+        inversion H5.
+        subst.
+        constructor.
+        simpl in H4.
+        firstorder.
+        apply H7.        
+    }
+    assert(forall a lst2 lst1, a::unique_3 (remove_elem_1 a lst2) lst1 = unique_3 lst2 (a::lst1)).
+    {
+        clear.
+        intros.
+        generalize dependent a.
+        generalize dependent lst1.
+        induction lst2.
         simpl.
         reflexivity.
         simpl.
         intros.
         case (a0 =? a) eqn:E.
+        rewrite Nat.eqb_eq in E.
+        rewrite E in *.
+        rewrite Nat.eqb_refl.
+        apply IHlst2.
+        rewrite Nat.eqb_sym in E.
+        rewrite E in *.
+        simpl.
+        case (is_in_3 lst1 a) eqn:E1.
+        rewrite IHlst2.
+        reflexivity.
+        simpl.
+        rewrite IHlst2.
+        reflexivity.
+    }
+    rewrite H1.
+    rewrite IHlst1.
+    rewrite H2.
+    reflexivity.
+    inversion H.
+    apply H6.
+    Focus 2.
+    apply H.
+    Focus 2.
+    rewrite H0.
+    reflexivity.
+    
+Qed.
+
+    
+
+
+    
+
+
+
+
+    
+Theorem sol1sol3 : forall lst, solution_1 lst = solution_3 lst.
+Proof.
+    unfold solution_3.
+    induction lst.
+    reflexivity.
+    simpl.
+    induction lst.
+    reflexivity.
+    simpl.
+    case (a =? a0) eqn:E.
+    rewrite Nat.eqb_eq in E.
+    rewrite E in *.
+    rewrite Nat.eqb_refl.
+    assert (forall a lst, remove_elem_1 a (remove_elem_1 a (lst)) = remove_elem_1 a (lst)).
+    {
+        clear.
+        intros.
+        generalize dependent a.
+        induction lst.
+        intros.
+        reflexivity.
+        simpl.
+        intros.
+        case (a0 =? a) eqn:E.
+        rewrite Nat.eqb_eq in E.
+        rewrite E in *.
         rewrite IHlst.
         reflexivity.
         simpl.
         rewrite E.
         rewrite IHlst.
-        reflexivity.
+        reflexivity. 
     }
-    unfold solution_3.
-    induction lst.
-    simpl.
-    reflexivity.
-    simpl.
-    rewrite IHlst.
-    induction lst.
-    reflexivity.
-    simpl.
-    case(a0 =? a) eqn:E.
-    rewrite Nat.eqb_eq in E.
+    rewrite H.
+    simpl in *.
+    apply IHlst.
+    rewrite Nat.eqb_sym in E.
     rewrite E in *.
+
+    
+
+
+    
     
 
     
