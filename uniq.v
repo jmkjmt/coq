@@ -297,18 +297,34 @@ Proof.
     Focus 2.
     rewrite H0.
     reflexivity.
-    
+    (* Strong induction? *)
+Abort.
+
+Fixpoint length (lst : list nat) : nat :=
+    match lst with
+    | nil => 0
+    | hd::tl => 1 + length tl
+    end. 
+
+Lemma elem : forall a lst, length( remove_elem_1 a lst ) <= length lst.
+Proof.
+    intros.
+    generalize dependent a.
+    induction lst.
+    simpl.
+    intros.
+    auto.
+    simpl.
+    intros.
+    case (a0 =? a) eqn:E.
+    rewrite Nat.eqb_eq in E.
+    rewrite E in *.
+    auto.
+    simpl.
+    Search (_ <= _ -> _ <= _).
+    apply le_n_S.
+    apply IHlst.
 Qed.
-
-    
-
-
-    
-
-
-
-
-    
 Theorem sol1sol3 : forall lst, solution_1 lst = solution_3 lst.
 Proof.
     unfold solution_3.

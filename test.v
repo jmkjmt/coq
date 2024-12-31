@@ -1,45 +1,28 @@
-Inductive le : nat -> nat -> Prop :=
-  | le_n (n : nat) : le n n
-  | le_S (n m : nat) : le n m -> le n (S m).
-
-Notation "n <= m" := (le n m) (at level 70).
-
-Example le_3_5 : 3 <= 5.
-Proof.
-  apply le_S.
-  apply le_S.
-  apply le_n.
-Qed.
+Require Import Arith.
+Open Scope nat_scope.
 
 Require Import List.
 Import ListNotations.
 
-Inductive AllDistinct {A : Type} : list A -> Prop :=
-| Dist_nil : AllDistinct []
-| Dist_cons : forall x l, 
-    ~ In x l ->
-    AllDistinct l -> 
-    AllDistinct (x :: l).
+Fixpoint max1 (lst : list nat): nat :=
+match lst with
+| [] => 0
+| [hd] => hd
+| hd::tl =>  if (max1 tl) <? hd then hd else max tl
+end.
 
-Goal AllDistinct [1;2;3].
+Fixpoint max2 lst :=
+match lst with
+| [] => 0
+| hd::tl => if (length lst) =? 1 then hd else 
+  let a := max2 tl in
+  if a <? hd then hd else a
+end. 
+Theorem max1_eq_max : forall l, max1 l = max2 l.
 Proof.
-  constructor.
+  induction l.
   simpl.
-  intro H.
-  destruct H.
-  discriminate.
-  destruct H.
-  discriminate.
-  apply H.
-  constructor.
+  reflexivity.
   simpl.
-  intro H.
-  destruct H.
-  discriminate.
-  contradiction.
-  constructor.
-  simpl.
-  intro H.
-  apply H.
-  constructor.
-Qed.
+  
+  
