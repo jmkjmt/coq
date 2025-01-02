@@ -267,6 +267,12 @@ Proof.
   induction x.
   simpl.
   reflexivity.
+  (*  
+  simpl.
+  induction x.
+  reflexivity.
+  simpl.
+  *)
   assert(forall x1 x2, qreva ( qreva x2 x1) [] = (rev x1) ++ x2).
   {
     intros.
@@ -335,6 +341,12 @@ Proof.
   simpl.
   clear.
 *)
+induction x.
+reflexivity.
+simpl.
+induction x.
+reflexivity.
+simpl.
   assert (forall x1 x2, rotate (length x1) (x1 ++ x2) = x2 ++ x1).
   {
     intros.
