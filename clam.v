@@ -320,6 +320,21 @@ Proof.
   simpl.
   reflexivity.
   simpl.
+  (*
+  induction x.
+  simpl.
+  reflexivity.
+  simpl.
+  rewrite <- app_assoc.
+  simpl.
+  induction x.
+  simpl.
+  reflexivity.
+  simpl.
+  rewrite <- app_assoc.
+  simpl.
+  clear.
+*)
   assert (forall x1 x2, rotate (length x1) (x1 ++ x2) = x2 ++ x1).
   {
     intros.
@@ -370,30 +385,48 @@ Proof.
   {
     induction y.
     reflexivity.
-    assert (forall l1 l2 : list nat, rev (l1 ++ l2) = rev l2 ++ rev l1).
+    (*  
+    induction y.
+    simpl.
+    reflexivity.
+    simpl in *.
+    rewrite <- app_assoc.
+    simpl.
+    induction y.
+    simpl.
+    reflexivity.
+    simpl.
+    rewrite <- app_assoc.
+    simpl.
+    *)
+    assert (forall l1 l2 : list nat, rev (rev l1 ++ l2) = rev l2 ++ l1).
     {
+      clear.
       induction l2.
       simpl.
       intros.
       rewrite app_nil_r.
       reflexivity.
+      simpl.
       intros.
+      rewrite <- app_assoc.
       simpl.
       rewrite IHl2.
-      rewrite app_assoc.
+      simpl.
+      rewrite <- app_assoc.
+      simpl.
       reflexivity.
     }
     simpl.
     rewrite H.
     simpl.
-    rewrite IHy.
     reflexivity.
   }
   induction x.
   simpl.
   intros.
-  rewrite H.
   rewrite app_nil_r.
+  rewrite H.
   reflexivity.
   simpl.
   intros.

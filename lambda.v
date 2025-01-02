@@ -167,6 +167,18 @@ Proof.
   intros.
   case (mem v lst) eqn:E.
   rewrite <- IHm.
+  (*  
+  induction m.
+  simpl.
+  case (String.eqb v v0)eqn:E1.
+  rewrite String.eqb_eq in E1.
+  rewrite E1 in *.
+  rewrite <- E.
+  rewrite mem13.
+  reflexivity.
+  reflexivity.
+  simpl.
+  *)
   assert (forall m v lst1 lst2, mem v lst1 = true -> sub_check_1 m (lst2++ v::lst1) = sub_check_1 m (lst2++lst1)).
   {
     clear.

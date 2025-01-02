@@ -313,6 +313,16 @@ Proof.
   simpl.
   intros.
   rewrite IHn1.
+  (*  
+  induction n1.
+  simpl.
+  reflexivity.
+  simpl.
+  induction n1.
+  simpl.
+  reflexivity.
+  simpl.
+*)
   assert (forall n1 n2 n3, natadd1 n3 (natmul_helper n1 n2 ZERO) = natmul_helper n1 n2 (natadd1 n3 ZERO)).
   {
     induction n4.
@@ -480,8 +490,6 @@ Proof.
   }
   rewrite H.
   reflexivity. *)
-
-      
       induction n6.
       (* why split on n6? *)
       simpl.
