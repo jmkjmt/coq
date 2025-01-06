@@ -341,12 +341,6 @@ Proof.
   simpl.
   clear.
 *)
-induction x.
-reflexivity.
-simpl.
-induction x.
-reflexivity.
-simpl.
   assert (forall x1 x2, rotate (length x1) (x1 ++ x2) = x2 ++ x1).
   {
     intros.
@@ -562,7 +556,94 @@ Fixpoint qfac n m : nat :=
   | 0 => m
   | S n' => qfac n' (mult m n)
   end.
-Theorem clema_84 : forall x y : nat , mult (fac x) y = qfac x y.
+
+Theorem clam_42 : forall (x : nat) (y z : list nat) , In x y -> In x (z ++ y).
+Proof.
+  intros.
+  generalize dependent x.
+  generalize dependent z.
+  induction y.
+  simpl.
+  intros.
+  exfalso.
+  exact H.
+  simpl.
+  intros.
+  destruct H.
+  rewrite H in *.
+  assert (forall (x: nat) (y z : list nat), In x (z++x::y)).
+  {
+    clear.
+    induction z.
+    simpl.
+    left.
+    reflexivity.
+    simpl.
+    right.
+    apply IHz.
+  }
+  apply H0.
+  assert (z++a::y = (z++[a])++y).
+  {
+    rewrite <- app_assoc.
+    simpl.    
+    reflexivity.
+  }
+  rewrite H0.
+  apply IHy.
+  exact H.
+Qed.
+ 
+Fixpoint intersect (x y : list nat) : list nat :=
+  match x with
+  | [] => []
+  | a :: tl => if mem a y then a :: intersect tl y else intersect tl y
+  end.
+
+Theorem clam_44 : forall x y z, In x y -> In x z -> In x (intersect y z).
+Proof.
+  intros.
+  generalize dependent x.
+  generalize dependent z.
+  induction y.
+  simpl.
+  intros.
+  exact H.
+  simpl.
+  intros.
+  destruct H.
+  rewrite H in *.
+  assert (mem x z = true).
+  {
+    induction z.
+    simpl in *.
+    exfalso.
+    exact H0.
+    simpl in *.
+    destruct H0.
+    rewrite H0 in *.
+    rewrite Nat.eqb_refl.
+    reflexivity.
+    case (x =? a0).
+    reflexivity.
+    apply IHz in H0.
+    exact H0.
+  }
+  rewrite H1.
+  simpl.
+  left.
+  reflexivity.
+  case (mem a z) eqn:E.
+  simpl.
+  right.
+  apply IHy.
+  exact H.
+  exact H0.
+  apply IHy.
+  exact H.
+  exact H0.
+Qed.
+Theorem clam_84 : forall x y : nat , mult (fac x) y = qfac x y.
 Proof.
   induction x.
   simpl.
