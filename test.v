@@ -33,3 +33,4 @@ Proof.
 Qed.
   
   
+Print Nat.sub.
