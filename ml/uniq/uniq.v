@@ -363,18 +363,8 @@ Proof.
     apply IHlst.
     rewrite Nat.eqb_sym in E.
     rewrite E in *.
-
-    
-
-
-    
-    
-
-    
-    
-    
-    
-
+    (* synthesize generalize term *)
+    Abort.
 
 Theorem test:forall n lst, is_in_3 (unique_3 lst [n]) n = true.
 Proof.
@@ -433,7 +423,6 @@ Proof.
     rewrite H.
     reflexivity.
     Qed.
-    Abort.
     (* assert (forall lst1 lst2 n, is_in_3 lst1 n = true -> is_in_3 (unique_3 lst2 lst1) n = true ).
     {
         intros.
@@ -492,7 +481,283 @@ Proof.
     simpl.
     fold solution_2.
     rewrite Nat.eqb_refl.
+    Abort.
+
+Theorem equiv: forall lst, solution_1 lst = solution_4 lst.
+Proof.
+    unfold solution_4.
+    induction lst.
+    simpl.
+    reflexivity.
+    simpl.
+    induction lst.
+    simpl.
+    reflexivity.
+    simpl.
+    case ( a=? a0) eqn:E.
+    rewrite Nat.eqb_eq in E.
+    rewrite E in *.
+
+        (* synthesize generalize term *)
+        
+    Abort.
+
+Fixpoint comb lst a := 
+  match lst with
+    [] => [a]
+    |hd::tl => if hd =? a then lst else hd::(comb tl a)
+  end.
+
+Fixpoint app l1 l2 :=
+  match l1 with
+    [] => l2
+    |hd :: tl => app tl (comb l2 hd)
+  end.
     
+Definition sol4 lst := app lst [].
+  
+Theorem ta1_sol4 : forall lst, solution_1 lst = sol4 lst.
+Proof.
+    unfold sol4.
+    induction lst.
+    simpl.
+    reflexivity.
+    simpl.
+    induction lst.
+    simpl.
+    reflexivity.
+    simpl.
+    case (a=?a0) eqn:E.
+    rewrite Nat.eqb_eq in E.
+    rewrite E in *.
+    (* synthesize generalize term *)
+    Abort.
+
+(* Fixpoint chk lst a :=
+ match lst with
+  [] => true
+  |hd::tl => if (hd =? a) then false else chk tl a
+ end.
+
+Fixpoint del lst a :=
+ match lst with
+  [] => []
+  |hd::tl => if (hd =? a) then del tl a else hd :: del tl a
+ end.
+
+Fixpoint uniq lst :=
+match lst with
+  [] => []
+  |hd :: tl => if (chk tl hd) then hd :: uniq tl else hd :: uniq (del tl hd)
+  end. *)
+Fixpoint rev (a accum : list nat) :=
+    match a with
+      |[] => accum
+      |hd::tl => rev tl ([hd] ++ accum)
+    end.
+
+Definition fastrev lst := rev lst [].
+  
+Fixpoint search l1 e :=
+  match l1 with
+    |[] => false
+    |hd::tl => if hd =? e then true else search tl e
+    end.
+  
+Fixpoint delete lst :=
+  match lst with
+    |[] => []
+    |hd::tl => if search tl hd then delete tl else [hd] ++ delete tl
+    end.
+  
+Definition sol9 lst := fastrev (delete (fastrev lst)).
+
+Theorem ta1_sol9 : forall lst, solution_1 lst = sol9 lst.
+Proof.
+    unfold sol9.
+    unfold fastrev.
+    induction lst.
+    simpl.
+    reflexivity.
+    simpl.
+    induction lst.
+    simpl.
+    reflexivity.
+    simpl.
+    (* snthesize generalize term *)
+    Abort.
+(* 
+Fixpoint find x lst :=
+  match lst with
+    | [] => false
+    | hd::tl => (x =? hd)||find x tl
+  end.
+
+Fixpoint sol20 lst :=
+  match List.rev lst with
+    | [] => []
+    | hd::tl => if find hd tl then sol20 (List.rev tl) else (sol20 (List.rev tl)) ++ [hd]
+  end. *)
+
+(* Definition aux (s l: list nat) (f: nat -> bool) := 
+match l with
+[] => s
+| hd::tl => if (f hd) then (s ++ (hd::(filter f tl))) else (s ++ (filter f tl))
+end.
+    
+Fixpoint sol43 lst :=
+match lst with
+  [] => []
+  | hd::tl => hd :: (sol43 (filter (fun x => negb (x =? hd)) tl))
+end. *)
+Fixpoint check item l := 
+match l with
+        | [] => [item]
+        | hd :: tl => if hd =? item then l else hd :: check item tl
+end.
+Fixpoint putIn list1 list2 := 
+match list1 with
+    | [] => list2
+    | hd :: tl =>
+       putIn tl (check hd list2)
+end.
+
+Definition sol57 lst := putIn lst [].
+
+Theorem ta1_sol57 : forall lst, solution_1 lst = sol57 lst.
+Proof.
+    unfold sol57.
+    induction lst.
+    simpl.
+    reflexivity.
+    simpl.
+    induction lst.
+    simpl.
+    reflexivity.
+    simpl.
+    case (a=?a0) eqn:E.
+    (* synthesize generalize term *)
+    Abort.
+
+Fixpoint reverse (l: list nat) :=
+  match l with
+    | [] => l
+    | hd::tl => reverse tl ++ [hd]
+end.
+
+Fixpoint insert a l :=
+  match l with
+    | [] => [a]
+    | hd::tl => if a <? hd then a::hd::tl 
+                else hd:: (insert a tl)
+end.
+
+Fixpoint checker l1 a := 
+  match l1 with
+    | [] => false
+    | [k] => k =? a 
+    | hd::tl => if hd =? a then true else checker tl a
+end.
+
+Fixpoint finder l1 fin := 
+  match l1 with
+    | [] => fin
+    | hd::tl => if checker fin hd then finder tl fin else finder tl (hd::fin)
+end.
+
+Definition sol75 lst :=
+  match lst with
+    | [] => []
+    | _ => reverse (finder lst [])
+end.
+
+Theorem ta1_sol75 : forall lst, solution_1 lst = sol75 lst.
+Proof.
+    unfold sol75.
+    induction lst.
+    reflexivity.
+    simpl.
+    induction lst.
+    simpl.
+    reflexivity.
+    simpl.
+    case (a=? a0) eqn:E.
+    (* synthesize generalize term *)
+    Abort.
+
+Fixpoint reverse89 (l:list nat) a := 
+match l with 
+    | [] => a
+    | hd::tl => reverse89 tl (hd::a) 
+end.
+
+Fixpoint gtl e ls := 
+match ls with 
+          | [] => false
+          | h::t => if e =? h then true else gtl e t
+end.
+Fixpoint checkdrop lt l := 
+match lt with
+  | [] => l
+  | hd::tl =>  if gtl hd l then checkdrop tl l else checkdrop tl (hd::l)
+  end.
+
+
+Definition sol89 lst := reverse89 (checkdrop lst []) [].
+
+Theorem ta1_sol89 : forall lst, solution_1 lst = sol89 lst.
+Proof.
+    unfold sol89.
+    induction lst.
+    reflexivity.
+    simpl.
+    (* syntehszie generalize term *)
+    Abort.
+
+Fixpoint fold_left (f : list nat -> nat -> list nat) (a: list nat) (l:list nat) :=
+  match l with
+  | [] => a
+  | h::t => fold_left f (f a h) t
+  end.
+
+Fixpoint has_element lst e :=
+	match lst with
+	| [] => false 
+	| hd::tl => (hd =? e)||(has_element tl e)
+    end.
+
+Definition sol101 (lst: list nat) :=
+ fold_left (fun a x => if has_element a x then a else a ++ [x]) [] lst.
+
+ Theorem ta1_sol101 : forall lst, solution_1 lst = sol101 lst.
+ Proof.
+    unfold sol101.
+    induction lst.
+    simpl.
+    reflexivity.
+    simpl.
+    remember (fun (a : list nat) (x : nat) => if has_element a x then a else a ++ [x]) as f.
+    induction lst.
+    reflexivity.
+    simpl.
+    case (a =? a0) eqn:E.
+    rewrite Nat.eqb_eq in E.
+    rewrite E in *.
+    rewrite Heqf.
+    simpl.
+    rewrite Nat.eqb_refl.
+    simpl.
+    (* rewrite <- Heqf.
+    2 :{
+        rewrite Heqf.
+        simpl.
+        rewrite E.
+        simpl.
+        rewrite <- Heqf.
+    } *)
+    (* synthesize generalize form *)
+    
+    Abort.
 
 
     
