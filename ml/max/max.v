@@ -4,11 +4,11 @@ Require Import Bool.
 Import ListNotations.
 Open Scope Z_scope.
 
-Fixpoint solution(lst: list Z) : Z :=
+Fixpoint ta1(lst: list Z) : Z :=
     match lst with
-    | [] => -10000000
+    | [] => 0
     | hd::[] => hd
-    | hd::tl => if Z.ltb (solution tl) hd then hd else solution tl
+    | hd::tl => if Z.ltb (ta1 tl) hd then hd else ta1 tl
     end.
 
 Fixpoint fold (f: Z -> Z -> Z) (l: list Z) (a: Z) : Z :=
@@ -17,12 +17,59 @@ Fixpoint fold (f: Z -> Z -> Z) (l: list Z) (a: Z) : Z :=
 	| hd::tl => f hd (fold f tl a)
     end.
 
-Definition max (lst: list Z) : Z :=
-	match lst with
-	| [] => -10000000
-	| hd::tl => fold (fun (x: Z) (y: Z) => if Z.ltb y x then x else y) lst hd
+Fixpoint loop (fir: Z) (ilst: list Z) : Z :=
+    match ilst with
+    | [] => fir
+    | h::t => if h >? loop fir t then h else loop fir t
+    end.
+Definition sol118 (lst: list Z) : Z :=
+    match lst with
+    | [] => 0
+    | hd::tl => loop hd tl
+    end.
+Definition ta_aux (a b: Z) : Z :=
+    if a <? b then b else a.
+Definition sol164 (lst : list Z) : Z :=
+    match lst with
+    | [] => 0
+    | hd::tl => fold ta_aux lst hd
     end.
 
+Theorem ta1_sol118: forall lst, ta1 lst = sol118 lst.
+Proof.
+    intros.
+    unfold sol118.
+    induction lst.
+    simpl.
+    reflexivity.
+    simpl.
+    destruct lst.
+    simpl.
+    reflexivity.
+    rewrite IHlst.
+    simpl.
+    case (loop z lst <? a) eqn:E.
+    simpl in IHlst.
+    (*  very hard..... *)
+    Abort.
+
+Theorem ta1_sol164: forall lst, ta1 lst = sol164 lst.
+Proof.
+    unfold sol164.
+    induction lst.
+    reflexivity.
+    simpl.
+    destruct lst.
+    simpl.
+    unfold ta_aux.
+    case (a <? a) eqn:E.
+    reflexivity.
+    reflexivity.
+    rewrite IHlst.
+    simpl.
+    (* vert hard... *)
+    Abort.
     
+
 
     

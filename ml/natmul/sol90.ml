@@ -15,9 +15,7 @@ let rec natmul : nat -> nat -> nat
 	else
 	let rec innerLoop : nat -> nat -> nat -> nat
 	= fun n1 n2 maintain ->
-			
-			match n1 with
-			|SUCC ZERO -> n2
-			|SUCC( sub_count ) -> innerLoop sub_count (natadd maintain n2) maintain	
-
+		match n1 with
+		|SUCC ZERO -> n2
+		|SUCC( sub_count ) -> innerLoop sub_count (natadd maintain n2) maintain	
 	in innerLoop n1 n2 n2

@@ -1,5 +1,11 @@
 Require Import Program Arith ZArith Lia.
 
+
+(* Fixpoint ta1 (f: nat -> nat) (a b : nat) : nat :=
+  if a <? b then 0
+  else if a =? b then f a
+  else f a + ta1 f (a + 1) b. *)
+  
 Program Fixpoint solution_1 (f: Z -> Z) (a b: Z) {measure 0}: Z :=
   if Z.ltb b a then 0
   else if Z.eqb a b then f a

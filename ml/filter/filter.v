@@ -11,26 +11,27 @@ Fixpoint solution (pred:Z -> bool) (lst:list Z) : list Z :=
     | hd::tl => if pred hd then hd :: solution pred tl else solution pred tl
     end.
 
-Definition filter_sub (pred:Z -> bool) (lst: list Z) : list Z :=
-    let fix aux (i:Z) (l :list Z) : list Z :=
-    match l with
-    | [] => []
-    | hd::tl => if pred hd then hd:: aux (i + 1) tl else aux (i + 1) tl
-    end in
-    aux (1:Z) lst.
+Fixpoint aux171 (pred: Z -> bool) (i: Z) (l: list Z) : list Z :=
+  match l with
+  | [] => []
+  | hd::tl => if pred hd then hd:: aux171 pred (i+1) tl else aux171 pred (i+1) tl
+  end.
+Definition sol171 (pred:Z -> bool) (lst: list Z) : list Z :=
+    aux171 pred (1:Z) lst.
 
+Fixpoint loop (pred: Z -> bool) (i: list Z) (o:list Z) : list Z :=
+    match i with
+    | [] => o
+    | hd::tl => if pred hd then loop pred tl (hd::o) else loop pred tl o
+    end.
 
-Definition filter_sub2 (pred: Z -> bool) (lst: list Z) := 
-	let fix loop (i: list Z) (o: list Z) :=
-		match i with
-		|	[] => o
-		|	h :: t => loop t (if (pred h) then(h :: o) else loop t o)
-    end in
-	let fix reverse (i: list Z) (o: list Z) :=
-		match i with
-		|	[] => o
-		|	h :: t => reverse t (h :: o) end in
-	reverse (loop lst []) [].
+Fixpoint reverse (i: list Z) (o: list Z) : list Z :=
+    match i with
+    | [] => o
+    | hd::tl => reverse tl (hd::o)
+    end.
+
+Definition sol121 (pred: Z -> bool) (lst: list Z) := reverse (loop pred lst []) [].
 
 
 
@@ -46,56 +47,58 @@ Proof.
   reflexivity.
 Qed.
 
-Theorem eq : forall pred lst, solution pred lst = filter_sub pred lst.
-Proof.
-    intros.
-    assert (lemma: forall lst, forall i j, 
-    (fix aux (i : Z) (l : list Z) {struct l} : list Z := match l with
-    | [] => []
-    | hd :: tl => if pred hd then hd :: aux (i + 1) tl else aux (i + 1) tl
-    end) (i:Z) lst = 
-    (fix aux (i : Z) (l : list Z) {struct l} : list Z := match l with
-    | [] => []
-    | hd :: tl => if pred hd then hd :: aux (i + 1) tl else aux (i + 1) tl
-    end) (j:Z) lst).
-    induction lst0.
-    reflexivity.
-    case (pred a).
-    intros.
-    apply cons_injective.
-    apply IHlst0.
-    intros.
-    apply IHlst0.
-    induction lst.
-    simpl.
-    unfold filter_sub.
-    reflexivity.
-    simpl.
-    case (pred a) eqn :H.
-    unfold filter_sub.
-    simpl.
-    rewrite H.
-    rewrite IHlst.
-    unfold filter_sub.    
-    apply cons_injective with (x:= a).
-    apply lemma.
-    unfold filter_sub.
-    rewrite H.
-    rewrite IHlst.
-    unfold filter_sub.
-    unfold filter_sub.
-    apply lemma.
-    Qed.
-
-Theorem eq2: forall pred lst, solution pred lst = filter_sub2 pred lst.
+Theorem eq2: forall pred lst, solution pred lst = sol121 pred lst.
 Proof.
   intros.
+  unfold sol121.
   induction lst.
+  simpl.
   reflexivity.
   simpl.
-  case (pred a) eqn: Ha.
-  unfold filter_sub2.
-  rewrite Ha.
-  unfold filter_sub2 in IHlst.
-  rewrite IHlst.
+  case (pred a) eqn:E.
+  2: {
+    apply IHlst.
+  }
+  induction lst.
+  simpl.
+  reflexivity.
+  simpl.
+  case (pred a0) eqn:E1.
+  clear IHlst0 IHlst.
+  (* need to generalize *)
+  Abort.
   
+
+Theorem eq : forall pred lst, solution pred lst = sol171 pred lst.
+Proof.
+  intros.
+  unfold sol171.
+  (* lemma *)
+  assert (forall i pred lst, aux171 pred i lst = solution pred lst).
+  {
+    clear.
+    intros.
+    generalize i.
+    induction lst.
+    simpl.
+    reflexivity.
+    simpl.
+    intros.
+    case (pred a) eqn:E.
+    rewrite IHlst.
+    reflexivity.
+    rewrite IHlst.
+    reflexivity.
+  }
+  induction lst.
+  simpl.
+  reflexivity.
+  simpl.
+  case (pred a) eqn:E.
+  rewrite H.
+  reflexivity.
+  rewrite H.
+  reflexivity.
+Qed.
+    
+
