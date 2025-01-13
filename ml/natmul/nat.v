@@ -117,27 +117,68 @@ Proof.
     reflexivity.
   }
   unfold sol90.
+  intros.
+  case (n1 =? 0) eqn: H1.
+  rewrite Nat.eqb_eq in H1.
+  rewrite H1.
+  simpl.
+  reflexivity.
+  simpl.
+  case (n2 =? 0) eqn: H2.
+  rewrite Nat.eqb_eq in H2.
+  rewrite H2.
+  apply H.
+  generalize dependent n2.
   induction n1.
-  simpl.
-  reflexivity.
-  simpl.
+  discriminate.
   intros.
-  destruct n1.
   simpl in *.
-  case n2.
+  case n1 eqn: H3.
+  simpl.
+  apply H0.
+  rewrite IHn1.
+  2:{
+    simpl.
+    reflexivity.
+  }
+  2:{
+    apply H2.
+  }
+  simpl.
+  case n.
   reflexivity.
   intros.
+  assert (forall n n2 n3, n =? 0 = false /\ n2 =? 0 = false -> natadd1 n2 (innerLoop n n3 n2) = innerLoop n (natadd1 n2 n3) n2).
+  {
+    clear.
+    induction n.
+    simpl.
+    intros.
+    destruct H.
+    discriminate.
+    intros.
+    destruct H.
+    simpl.
+    destruct n.
+    reflexivity.
+    apply IHn.
+    simpl.
+    split.
+    reflexivity.
+    apply H0.
+  }
+  rewrite H4.
+  reflexivity.
+  split.
   simpl.
   reflexivity.
-  
-  (* very hard... *)
-  Abort.
+  apply H2.
+Qed.
 
 
 
 
-
-
+(* 
 
 Fixpoint natmul_helper (n1 n2 result: nat) : nat :=
   match n1 with
@@ -585,4 +626,4 @@ Proof.
   }
   rewrite H.
   reflexivity.
-Qed.
+Qed. *)
