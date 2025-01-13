@@ -1,9 +1,9 @@
 Require Import Arith.
 Require Import List.
 Require Import Bool Program.
-Inductive nat : Type :=
+(* Inductive nat : Type :=
  0 : nat
-| S : nat -> nat.
+| S : nat -> nat. *)
 
 Fixpoint natadd1 n1 n2 :=
   match n1 with
@@ -118,17 +118,17 @@ Proof.
   }
   (*  *)
   unfold sol90.
+  simpl.
+  
+  (* unfold sol90.
   induction n1.
-  intros.
   simpl.
   reflexivity.
+  simpl.
   intros.
+  rewrite IHn1. *)
   
   
-  
-  
-  
-
   (* very hard... *)
   Abort.
 
