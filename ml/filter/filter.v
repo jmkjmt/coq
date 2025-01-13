@@ -59,15 +59,53 @@ Proof.
   2: {
     apply IHlst.
   }
-  induction lst.
-  simpl.
-  reflexivity.
-  simpl.
-  case (pred a0) eqn:E1.
-  clear IHlst0 IHlst.
-  (* need to generalize *)
-  Abort.
-  
+  assert (forall pred lst1 lst2, (reverse lst1 []) ++ solution pred lst2 = reverse (loop pred lst2 lst1) []).
+  {
+    clear.
+    intros.
+    generalize dependent lst1.
+    induction lst2.
+    simpl.
+    intros.
+    rewrite app_nil_r.
+    reflexivity.
+    simpl.
+    intros.
+    case (pred a) eqn:E.
+    rewrite <- IHlst2.
+    simpl.
+    assert (forall lst, reverse lst1 [] ++ a :: lst = (reverse lst1 [] ++ [a] ++ lst)).
+    {
+      simpl.
+      reflexivity.
+    }
+    rewrite H.
+    assert (forall lst1 lst2 lst3, reverse lst1 lst2 ++ lst3 = reverse lst1 (lst2++lst3)).
+    {
+      clear.
+      induction lst1.
+      simpl.
+      reflexivity.
+      simpl.
+      intros.
+      rewrite IHlst1.
+      simpl.
+      reflexivity.      
+    }
+    rewrite app_assoc.
+    rewrite H0.
+    simpl.
+    reflexivity.   
+    apply IHlst2. 
+  }
+  assert (a ::solution pred lst = reverse [a] [] ++ solution pred lst).
+  {
+    simpl.
+    reflexivity.
+  }
+  rewrite H0.
+  apply H.
+Qed.
 
 Theorem eq : forall pred lst, solution pred lst = sol171 pred lst.
 Proof.
