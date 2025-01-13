@@ -120,7 +120,18 @@ Proof.
   unfold sol90.
   induction n1.
   intros.
-  
+  simpl.
+  reflexivity.
+  intros.
+  simpl.
+  destruct n1.
+  simpl in *.
+  case n2.
+  simpl.
+  reflexivity.
+  simpl.
+  intros.
+  rewrite H0.
   
   
   
