@@ -116,6 +116,15 @@ Proof.
     rewrite IHn2.
     reflexivity.
   }
+  (*  *)
+  unfold sol90.
+  induction n1.
+  intros.
+  
+  
+  
+  
+
   (* very hard... *)
   Abort.
 
