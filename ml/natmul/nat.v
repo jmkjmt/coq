@@ -113,22 +113,9 @@ Proof.
     induction n2.
     reflexivity.
     simpl.
-    rewrite IHn2.
+    rewrite IHn2. 
     reflexivity.
   }
-  (*  *)
-  unfold sol90.
-  simpl.
-  
-  (* unfold sol90.
-  induction n1.
-  simpl.
-  reflexivity.
-  simpl.
-  intros.
-  rewrite IHn1. *)
-  
-  
   (* very hard... *)
   Abort.
 
