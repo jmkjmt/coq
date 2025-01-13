@@ -120,6 +120,10 @@ Proof.
   unfold sol90.
   induction n1.
   intros.
+  simpl.
+  reflexivity.
+  intros.
+  
   
   
   
