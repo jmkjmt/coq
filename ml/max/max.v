@@ -39,6 +39,18 @@ Theorem ta1_sol118: forall lst, ta1 lst = sol118 lst.
 Proof.
     unfold sol118.
     intros.
+    induction lst.
+    reflexivity.
+    simpl.
+    destruct lst.
+    reflexivity.
+    rewrite IHlst.
+    simpl.
+    case (loop z lst <? a) eqn:E.
+    case (z >? loop a lst) eqn:E1.
+    destruct lst.
+    simpl in *.
+    
     (*  very hard..... *)
     Abort.
 
