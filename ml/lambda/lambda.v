@@ -470,11 +470,6 @@ Proof.
     reflexivity.
   }
   simpl.
-  induction m.
-  simpl.
-  rewrite String.eqb_sym.
-  reflexivity.
-  simpl.
   (* synthesize generalize term *)
   Abort.
 Fixpoint is_connect m :=
