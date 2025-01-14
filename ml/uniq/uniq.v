@@ -545,10 +545,10 @@ Fixpoint del lst a :=
   |hd::tl => if (hd =? a) then del tl a else hd :: del tl a
  end.
 
-Fixpoint uniq lst :=
+Fixpoint sol5 lst :=
 match lst with
   [] => []
-  |hd :: tl => if (chk tl hd) then hd :: uniq tl else hd :: uniq (del tl hd)
+  |hd :: tl => if (chk tl hd) then hd :: sol5 tl else hd :: sol5 (del tl hd)
   end. *)
 Fixpoint rev (a accum : list nat) :=
     match a with

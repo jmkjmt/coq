@@ -50,7 +50,21 @@ Proof.
     case (z >? loop a lst) eqn:E1.
     destruct lst.
     simpl in *.
+    Search (_ <? _ = true).
+    rewrite Z.ltb_lt in E.
+    rewrite Z.gtb_gt in E1.
+    Search (_ < _ -> _).
+    apply Z.lt_gt in E.
+    Search (_ > _ -> _).
+    apply Zgt_asym in E1.
+    exfalso.
+    apply E1.
+    apply E.
+    simpl in *.
+    case (z0 >? loop a lst) eqn:E2.
     
+    
+
     (*  very hard..... *)
     Abort.
 

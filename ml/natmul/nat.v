@@ -72,20 +72,23 @@ Fixpoint natmul7 (n1 n2:nat) : nat :=
   end.
 
 
-(* 
-Fixpoint add_sol6 (n1 n2 :nat) : nat :=
+
+Program Fixpoint add_sol6 (n1 n2 :nat) {measure 0} : nat :=
 match n1 with
 |0 => n2
 |S x => S (add_sol6 n2 x)
 end.
+Next Obligation.
+Admitted.
 
-Fixpoint sol6 (n1 n2 :nat) : nat :=
+Program Fixpoint sol6 (n1 n2 :nat) {measure 0} : nat :=
 match n1 with
 |0 => 0
 |S x => add_sol6 n2 (sol6 n2 x)
 end.
-Theorem ta1_sol6 : forall n1 n2, natmul1 n1 n2 = sol6 n1 n2.
-Proof. *)
+Next Obligation.
+Admitted.
+
 Fixpoint innerLoop (n1 n2 maintain : nat) : nat :=
   match n1 with
   | 0 => maintain
@@ -176,9 +179,6 @@ Proof.
 Qed.
 
 
-
-
-(* 
 
 Fixpoint natmul_helper (n1 n2 result: nat) : nat :=
   match n1 with
@@ -626,4 +626,4 @@ Proof.
   }
   rewrite H.
   reflexivity.
-Qed. *)
+Qed. 

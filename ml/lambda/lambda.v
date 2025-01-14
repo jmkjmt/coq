@@ -267,19 +267,29 @@ Proof.
   simpl.
   reflexivity.
   simpl.
+  2:{
+    simpl.
+    rewrite IHm1.
+    rewrite IHm2.
+    destruct (getStn m1).
+    simpl.
+    reflexivity.
+    simpl.
+    reflexivity.
+  }
   induction m.
   simpl.
   case (String.eqb s s0) eqn:E.
-  rewrite String.eqb_eq in E.
-  rewrite E in *.
-  rewrite String.eqb_refl.
+  rewrite String.eqb_sym in E.
+  rewrite E.
   simpl.
   reflexivity.
   rewrite String.eqb_sym in E.
-  rewrite E in *.
+  rewrite E.
   simpl.
   reflexivity.
   simpl.
+  (* synthesize generalize form *)
   Abort.
 Open Scope string_scope.
 Fixpoint valify (string_: string) (covers: lambda) : bool :=
