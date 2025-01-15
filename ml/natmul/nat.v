@@ -72,7 +72,6 @@ Fixpoint natmul7 (n1 n2:nat) : nat :=
   end.
 
 
-
 Program Fixpoint add_sol6 (n1 n2 :nat) {measure 0} : nat :=
 match n1 with
 |0 => n2
