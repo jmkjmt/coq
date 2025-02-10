@@ -758,6 +758,78 @@ Definition sol101 (lst: list nat) :=
     (* synthesize generalize form *)
     
     Abort.
+Theorem exam : forall lst, solution_3 lst = sol4 lst.
+Proof.
+    unfold solution_3.
+    unfold sol4.
+    induction lst.
+    simpl.
+    reflexivity.
+    simpl.
+    assert (forall lst lst1, unique_3 lst1 lst = app lst1 lst).
+    {
+        clear.
+        intros.
+        generalize dependent lst.
+        induction  lst1.
+        simpl.
+        reflexivity.
+        simpl.
+        intros.
+        case (is_in_3 lst a) eqn:E.
+        rewrite IHlst1.
+        assert (comb lst a = lst).
+        {
+            clear IHlst1 lst1.
+            generalize dependent a.
+            induction lst.
+            simpl.
+            intros.
+            discriminate.
+            simpl.
+            intro a0.
+            case (a0 =? a) eqn:E.
+            intros.
+            rewrite Nat.eqb_eq in E.
+            rewrite E in *.
+            rewrite Nat.eqb_refl.
+            reflexivity.
+            intros.
+            rewrite Nat.eqb_sym in E.
+            rewrite E.
+            rewrite IHlst.
+            reflexivity.
+            exact E0.
+        }
+        rewrite H.
+        reflexivity.
+        rewrite IHlst1.
+        assert (comb lst a = lst ++ [a]).
+        {
+            clear IHlst1 lst1.
+            generalize dependent a.
+            induction lst.
+            simpl.
+            intros.
+            reflexivity.
+            simpl.
+            intro a0.
+            case (a0 =? a) eqn:E.
+            intros.
+            discriminate.
+            intros.
+            rewrite Nat.eqb_sym in E.
+            rewrite E.
+            rewrite IHlst.
+            reflexivity.
+            exact E0.
 
+        }
+        rewrite H.
+        reflexivity.
+    }
+    rewrite H.
+    reflexivity.
+    Qed.
 
     

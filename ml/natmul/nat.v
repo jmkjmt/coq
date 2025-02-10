@@ -99,6 +99,10 @@ Definition sol90 (n1 n2 : nat) : nat :=
 	if orb (Nat.eqb n1 0) (Nat.eqb n2 0) then 0
 	else innerLoop n1 n2 n2.
 
+
+  
+
+  
 Theorem ta1_sol90 : forall n1 n2, natmul1 n1 n2 = sol90 n1 n2.
 Proof.
   assert (forall n1, natmul1 n1 0 = 0).

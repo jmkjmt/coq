@@ -74,7 +74,7 @@ Proof.
     case (pred a) eqn:E.
     rewrite <- IHlst2.
     simpl.
-    assert (forall lst, reverse lst1 [] ++ a :: lst = (reverse lst1 [] ++ [a] ++ lst)).
+    assert (forall (a: Z) lst1 lst2, lst1 ++ a :: lst2 = (lst1 ++ [a] ++ lst2)).
     {
       simpl.
       reflexivity.
