@@ -71,6 +71,18 @@ Fixpoint natmul7 (n1 n2:nat) : nat :=
   | S n => natadd1 n1 (natmul7 n1 n)
   end.
 
+Fixpoint natadd32 (n1 n2 : nat) : nat :=
+  match n1 with
+  | 0 => n2
+  | S n => natadd32 n (S n2)
+  end.
+Fixpoint sol32_sub (a b c : nat) : nat :=
+  match a with
+  | 0 => b
+  | S a' => sol32_sub a' (natadd32 b c) c
+  end.
+Definition sol32 (n1 n2 : nat) : nat :=
+  sol32_sub n1 0 n2.
 
 Program Fixpoint add_sol6 (n1 n2 :nat) {measure 0} : nat :=
 match n1 with
@@ -79,6 +91,7 @@ match n1 with
 end.
 Next Obligation.
 Admitted.
+
 
 Program Fixpoint sol6 (n1 n2 :nat) {measure 0} : nat :=
 match n1 with
@@ -100,7 +113,66 @@ Definition sol90 (n1 n2 : nat) : nat :=
 	else innerLoop n1 n2 n2.
 
 
+Theorem add_1_2 : forall n1 n2 , natadd1 n1 n2 = natadd2 n1 n2.
+Proof.
+  induction n1.
+  simpl.
+  induction n2.
+  simpl.
+  reflexivity.
+  simpl.
+  rewrite <- IHn2.
+  reflexivity.
+  simpl.
+  induction n2.
+  simpl.
+  rewrite IHn1.
+  simpl.
+  reflexivity.
+  simpl.
+  rewrite IHn1.
+  simpl.
+  rewrite <- IHn2.
+  rewrite IHn1.
+  reflexivity.
+  Qed.
+
+Theorem mul_1_3 : forall n1 n2, natmul1 n1 n2 = natmul3 n1 n2.
+Proof.
+  induction n1.
+  simpl.
+  reflexivity.
+  simpl.
+  intros.
+  rewrite IHn1.
+  assert (forall n1 n2, natadd1 n1 n2 = natadd3 n1 n2).
+  {
+    clear.
+    induction n1.
+    simpl.
+    reflexivity.
+    simpl.
+    intros.
+    rewrite IHn1.
+    assert (forall n1 n2, S (natadd3 n1 n2) = natadd3 n1 (S n2)).
+    {
+      clear.
+      induction n1.
+      simpl.
+      reflexivity.
+      simpl.
+      intro n2.
+      rewrite IHn1.
+      reflexivity.
+    }
+    rewrite H.
+    reflexivity.
+  }
+  rewrite H.
+  reflexivity.
+  Qed.
   
+
 
   
 Theorem ta1_sol90 : forall n1 n2, natmul1 n1 n2 = sol90 n1 n2.
@@ -181,6 +253,12 @@ Proof.
   apply H2.
 Qed.
 
+Fixpoint natadd116 (n1 n2: nat) : nat :=
+match n1, n2 with
+| 0,_ => n2
+| _,0 => n1
+| S n, _ => natadd116 n (S n2)
+end.
 
 
 Fixpoint natmul_helper (n1 n2 result: nat) : nat :=
@@ -188,7 +266,7 @@ Fixpoint natmul_helper (n1 n2 result: nat) : nat :=
   | 0 => result
   | S n => natmul_helper n n2 (natadd1 n2 result)
   end.
-Definition natmul_sub (n1 n2: nat) : nat :=
+Definition natmul116 (n1 n2: nat) : nat :=
   natmul_helper n1 n2 0.
 
 Lemma l1: forall n2 : nat, 0 = natmul6 0 n2.
@@ -417,83 +495,7 @@ Proof.
   reflexivity.
   Qed.
 
-Theorem very_hard : forall n1 n2, natmul1 n1 n2 = natmul_sub n1 n2.
-Proof.
-  unfold natmul_sub.
-  induction n1.
-  simpl.
-  reflexivity.
-  simpl.
-  intros.
-  rewrite IHn1.
-  (*  
-  induction n1.
-  simpl.
-  reflexivity.
-  simpl.
-  induction n1.
-  simpl.
-  reflexivity.
-  simpl.
-*)
-  assert (forall n1 n2 n3, natadd1 n3 (natmul_helper n1 n2 0) = natmul_helper n1 n2 (natadd1 n3 0)).
-  {
-    induction n4.
-    simpl.
-    reflexivity.
-    simpl.
-    rewrite IHn4.
-    assert (forall n1 n2 n3, S (natmul_helper n1 n2 n3) = natmul_helper n1 n2 (S n3)).
-    {
-      induction n5.
-      simpl.
-      reflexivity.
-      simpl.
-      intros.
-      rewrite IHn5.
-      assert (forall n1 n2, S (natadd1 n1 n2) = natadd1 n1 (S n2)).
-      {
-        induction n8.
-        simpl.
-        reflexivity.
-        simpl.
-        intros.
-        rewrite IHn8.
-        reflexivity.
-      }
-      rewrite H.
-      reflexivity.
-    }
-    rewrite H.
-    reflexivity.
-  }
-  rewrite H.
-  reflexivity.
-  (* assert (forall n, natadd1 n 0 = n).
-  {
-    induction n.
-    simpl.
-    reflexivity.
-    simpl.
-    rewrite IHn.
-    reflexivity.
-  } 
-  rewrite H.
-  
-  assert (forall n1 n2 n3, natmul_helper n1 n2 (natadd1 n2 n3) = natadd1 n2 (natmul_helper n1 n2 n3)).
-  {
-    induction n0.
-    simpl.
-    reflexivity.
-    simpl.
-    intros.
-    rewrite IHn0.
-    reflexivity.
-  }
-  rewrite H.
-  rewrite IHn1.
-  reflexivity. *)
-Qed.
+
   
 Theorem test1213: forall n1, natadd4 0 n1 = n1.
 Proof.
@@ -630,3 +632,48 @@ Proof.
   rewrite H.
   reflexivity.
 Qed. 
+
+Theorem very_hard : forall n1 n2, natmul1 n1 n2 = natmul116 n1 n2.
+Proof.
+  unfold natmul116.
+  induction n1.
+  simpl.
+  reflexivity.
+  simpl.
+  intros.
+  rewrite IHn1.
+  (* How can I know below lemma.... *)
+  assert (forall n1 n2 n3, natadd1 n3 (natmul_helper n1 n2 0) = natmul_helper n1 n2 (natadd1 n3 0)).
+  {
+    induction n4.
+    simpl.
+    reflexivity.
+    simpl.
+    rewrite IHn4.
+    assert (forall n1 n2 n3, S (natmul_helper n1 n2 n3) = natmul_helper n1 n2 (S n3)).
+    {
+      induction n5.
+      simpl.
+      reflexivity.
+      simpl.
+      intros.
+      rewrite IHn5.
+      assert (forall n1 n2, S (natadd1 n1 n2) = natadd1 n1 (S n2)).
+      {
+        induction n8.
+        simpl.
+        reflexivity.
+        simpl.
+        intros.
+        rewrite IHn8.
+        reflexivity.
+      }
+      rewrite H.
+      reflexivity.
+    }
+    rewrite H.
+    reflexivity.
+  }
+  rewrite H.
+  reflexivity.
+Qed.

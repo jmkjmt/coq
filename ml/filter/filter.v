@@ -5,7 +5,10 @@ Require Import Bool.
 Import ListNotations.
 Open Scope Z_scope.
 
+
+
 Fixpoint solution (pred:Z -> bool) (lst:list Z) : list Z :=
+ 
     match lst with
     | [] => []
     | hd::tl => if pred hd then hd :: solution pred tl else solution pred tl
@@ -38,6 +41,7 @@ Definition sol121 (pred: Z -> bool) (lst: list Z) := reverse (loop pred lst []) 
 Lemma cons_injective : forall  (x : Z) (l1 l2 : list Z),
   x :: l1 = x :: l2 <-> l1 = l2.
 Proof.
+  
   split.
   intros.
   inversion H.

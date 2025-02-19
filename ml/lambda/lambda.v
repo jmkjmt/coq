@@ -9,6 +9,7 @@ Inductive lambda : Type :=
 | C : lambda -> lambda -> lambda.
 
 
+
 Fixpoint is_mem_1 variables string : bool :=
 match variables with
 | nil => false
