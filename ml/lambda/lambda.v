@@ -168,7 +168,7 @@ Proof.
   intros.
   case (mem s lst) eqn:E.
   rewrite <- IHm.
-  (*  
+(*    
   induction m.
   simpl.
   case (String.eqb v v0)eqn:E1.
@@ -497,7 +497,7 @@ Lemma super_generalize : (forall m lst, sub_check_1 m [] = checkRec m [] -> sub_
   simpl in H.
   Admitted.
     
-Theorem ta1_sol109 : forall m, solution_1 m = sol109 m.
+(* Theorem ta1_sol109 : forall m, solution_1 m = sol109 m.
 Proof.
   unfold solution_1.
   unfold sol109.
@@ -521,7 +521,7 @@ Proof.
   simpl.
   reflexivity.
   apply IHm.
-Qed.
+Qed. *)
 
 Fixpoint is_connect m :=
 		match m with
@@ -656,4 +656,5 @@ Proof.
   }
   apply H.
 Qed.
+
   
