@@ -832,4 +832,162 @@ Proof.
     reflexivity.
     Qed.
 
+    Fixpoint all_diff a lst :=
+    match lst with
+    | hd::tl => if a =? hd then false else all_diff a tl
+    | [] => true
+    end.
+    Fixpoint is_uniq lst :=
+    match lst with
+    | hd::tl => is_uniq tl && all_diff hd tl
+    | [] => true
+    end.
+    
+Lemma sg : forall lst1 lst2, is_uniq lst2 = true -> lst2 ++ mk_remove lst1 lst2 = unique_3 lst1 lst2.
+Proof.
+    assert (forall lst1 lst2 (a:nat), is_uniq (lst2 ++ [a]) = true -> mk_remove (a:: lst1) lst2 = [a] ++ mk_remove lst1 (lst2 ++ [a])).
+    {
+        clear.
+        intros.
+        generalize dependent a.
+        generalize dependent lst1.
+        induction lst2.
+        simpl.
+        reflexivity.
+        intros.
+        simpl.
+        rewrite IHlst2.
+        simpl.
+        simpl in *.
+        case (a =? a0) eqn:E.
+        rewrite Nat.eqb_eq in E.
+        rewrite E in *.
+        assert (all_diff a0 (lst2 ++ [a0]) = false).
+        {
+            clear.
+            induction lst2.
+            simpl.
+            rewrite Nat.eqb_refl.
+            reflexivity.
+            simpl.
+            case (a0 =? a).
+            reflexivity.
+            rewrite IHlst2.
+            reflexivity.
+        }
+        rewrite H0 in H.
+        case (is_uniq (lst2 ++ [a0])) eqn:E1.
+        simpl in *.
+        discriminate.
+        simpl in *.
+        discriminate.
+        reflexivity.
+        simpl in H.
+        case (is_uniq (lst2 ++ [a0])) eqn:E.
+        reflexivity.
+        discriminate.
+    }
+    intros.
+    generalize dependent lst2.
+    induction lst1.
+    simpl.
+    intros.
+    
+    assert (mk_remove [] lst2 = []).
+    induction lst2.
+    simpl.
+    reflexivity.
+    simpl.
+    rewrite IHlst2.
+    simpl.
+    reflexivity.
+    simpl in H0.
+    case (is_uniq lst2) eqn :E.
+    reflexivity.
+    discriminate.
+    rewrite H1.
+    simpl.
+    assert (forall (lst:list nat), lst ++ [] = lst).
+    {
+        clear.
+        induction lst.
+        simpl.
+        reflexivity.
+        simpl.
+        rewrite IHlst.
+        simpl.
+        reflexivity.
+    }
+    apply H2.
+    induction lst2.
+    simpl.
+    intros.
+    rewrite <- IHlst1.
+    assert (mk_remove lst1 [a] = mk_remove lst1 ([] ++ [a])).
+    simpl.
+    reflexivity.
+    rewrite H1.
+    rewrite <- H.
+    simpl.
+    reflexivity.
+    simpl.
+    reflexivity.
+    simpl.
+    reflexivity.
+    simpl.
+    intros.
+    case (a=? a0) eqn:E.
+    rewrite Nat.eqb_eq in E.
+    rewrite E in *.
+    rewrite <- IHlst1.
+    simpl.
+    rewrite H.
+    simpl.
+    rewrite Nat.eqb_refl.
+    simpl.
+    3:{
+        simpl.
+        apply H0.
+    }
+    3:{
+        case (is_in_3 lst2 a) eqn:E1.
+        simpl.
+        rewrite <- IHlst1.
+        simpl.
+        rewrite H.
+        simpl.
+        rewrite Nat.eqb_sym in E.
+        rewrite E in *.
+        
+
+    }
+    
+
+
+
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+    }
+
+Theorem asdf: forall lst: list nat, solution_1 lst = solution_3 lst.
+Proof.
+    unfold solution_3.
+    induction lst.
+    simpl.
+    reflexivity.
+    simpl.
     
