@@ -50,7 +50,51 @@ Proof.
   rewrite H.
   reflexivity.
 Qed.
+Fixpoint cond (pred : Z -> bool) (lst: list Z) : bool :=
+match lst with
+| [] => true
+| hd::tl => if pred hd then cond pred tl else false
+end.
+Fixpoint app (lst: list Z) a :=
+match lst with 
+| [] => [a]
+| hd::tl => hd :: app tl a
+end.
 
+Theorem lemma3: forall pred a lst1 lst2, a :: reverse (loop pred lst1 lst2) [] = reverse (loop pred lst1 (app lst2 a)) [].
+Proof.
+  intros.
+  generalize dependent lst2.
+  generalize dependent a.
+  induction lst1.
+  simpl.
+  induction lst2.
+  simpl.
+  reflexivity.
+  simpl.
+  assert (forall a lst1 lst2, a:: reverse lst1 lst2 = reverse (app lst1 a) lst2).
+  {
+    intros.
+    generalize dependent lst0.
+    induction lst1.
+    simpl.
+    reflexivity.
+    simpl.
+    intros.
+    rewrite IHlst1.
+    reflexivity.
+  }
+  rewrite H.
+  reflexivity.
+  simpl.
+  intros.
+  case (pred a) eqn:E.
+  rewrite IHlst1.
+  simpl.
+  reflexivity.
+  rewrite IHlst1.
+  reflexivity.
+Qed.
 Theorem eq2: forall pred lst, solution pred lst = sol121 pred lst.
 Proof.
   intros.
@@ -63,52 +107,13 @@ Proof.
   2: {
     apply IHlst.
   }
-  assert (forall pred lst1 lst2, (reverse lst1 []) ++ solution pred lst2 = reverse (loop pred lst2 lst1) []).
-  {
-    clear.
-    intros.
-    generalize dependent lst1.
-    induction lst2.
-    simpl.
-    intros.
-    rewrite app_nil_r.
-    reflexivity.
-    simpl.
-    intros.
-    case (pred a) eqn:E.
-    rewrite <- IHlst2.
-    simpl.
-    assert (forall (a: Z) lst1 lst2, lst1 ++ a :: lst2 = (lst1 ++ [a] ++ lst2)).
-    {
-      simpl.
-      reflexivity.
-    }
-    rewrite H.
-    assert (forall lst1 lst2 lst3, reverse lst1 lst2 ++ lst3 = reverse lst1 (lst2++lst3)).
-    {
-      clear.
-      induction lst1.
-      simpl.
-      reflexivity.
-      simpl.
-      intros.
-      rewrite IHlst1.
-      simpl.
-      reflexivity.      
-    }
-    rewrite app_assoc.
-    rewrite H0.
-    simpl.
-    reflexivity.   
-    apply IHlst2. 
-  }
-  assert (a ::solution pred lst = reverse [a] [] ++ solution pred lst).
-  {
-    simpl.
-    reflexivity.
-  }
-  rewrite H0.
-  apply H.
+  assert ([a] = app [] a).
+  simpl.
+  reflexivity.
+  rewrite IHlst.
+  rewrite H.
+  rewrite <- lemma3.
+  reflexivity.
 Qed.
 
 Theorem eq : forall pred lst, solution pred lst = sol171 pred lst.
@@ -142,5 +147,6 @@ Proof.
   rewrite H.
   reflexivity.
 Qed.
-    
+
+
 

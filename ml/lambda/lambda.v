@@ -570,72 +570,29 @@ Definition sol530 (l:lambda) : bool :=
 
 Theorem ta1_sol530 : forall m, solution_1 m = sol530 m.
 Proof.
-  unfold solution_1.
-  unfold sol530.
-  induction m.
-  simpl.
-  reflexivity.
-  2:{
-    simpl.
-    rewrite IHm1.
-    rewrite IHm2.
-    case (Nat.eqb (ck m1 []) 0) eqn:E.
-    simpl.
-    case (Nat.eqb (ck m2 []) 0 ) eqn:E1.
-    rewrite Nat.eqb_eq in *.
-    rewrite E.
-    rewrite E1.
-    simpl.
-    reflexivity.
-    rewrite Nat.eqb_eq in *.
-    rewrite E.
-    simpl.
-    rewrite E1.
-    reflexivity.
-    simpl.
-    rewrite Nat.eqb_neq in E.
-    remember (ck m1 []) as n1.
-    remember (ck m2 []) as n2.
-    clear m1 m2 Heqn1 IHm1 Heqn2 IHm2.
-    assert (n1 + n2 <> 0).
+  assert (forall n1 n2, (andb (Nat.eqb n1 0)  (Nat.eqb n2 0)) =  Nat.eqb (n1 + n2) 0 ).
     {
-      generalize dependent n1.
-      induction n2.
+      clear.
+      induction n1.
+      simpl.
       intros.
-      rewrite Nat.add_0_r.
-      apply E.
-      intros.
-      assert (n1 + S n2 = (S n1) + n2).
-      {
-        clear.
-        generalize dependent n2.
-        induction n1.
-        simpl.
-        reflexivity.
-        simpl.
-        intros.
-        rewrite IHn1.
-        reflexivity.
-      }
-      rewrite H.
-      apply IHn2.
-      auto.
+      reflexivity.
+      simpl.
+      reflexivity.
     }
-    rewrite <- Nat.eqb_neq in H.
-    rewrite H.
-    reflexivity.
-  }
-  simpl.
-  assert (forall m lst, sub_check_1 m lst = Nat.eqb (ck m lst) 0).
+  assert (forall m lst, sub_check_1 m lst  = (Nat.eqb (ck m lst) 0)).
   {
-    clear.
-    intros.
-    generalize dependent lst.
     induction m.
     simpl.
-    intros.
-    case (is_mem_1 lst s).
+    induction lst.
+    simpl.
     reflexivity.
+    simpl.
+    case (String.eqb a s) eqn:E.
+    simpl.
+    reflexivity.
+    simpl.
+    rewrite IHlst at 1.
     reflexivity.
     simpl.
     intros.
@@ -645,16 +602,23 @@ Proof.
     intros.
     rewrite IHm1.
     rewrite IHm2.
-    remember (ck m1 lst) as n1.
-    remember (ck m2 lst) as n2.
-    clear.
-    induction n1.
-    simpl.
-    reflexivity.
-    simpl.
-    reflexivity.
+    rewrite H.
+    reflexivity.    
   }
-  apply H.
+  unfold sol530.
+  unfold solution_1.
+  induction m.
+  simpl.
+  reflexivity.
+  simpl.
+  apply H0.
+  simpl.
+  rewrite IHm1.
+  rewrite IHm2.
+  rewrite H.
+  reflexivity.
 Qed.
+
+
 
   
