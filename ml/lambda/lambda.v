@@ -456,72 +456,7 @@ Fixpoint checkRec (lambda_foo : lambda) (var_list : list string) :bool :=
     end.
 Definition sol109 (lambda_foo : lambda) : bool := checkRec lambda_foo [].
 
-Fixpoint mk_addtonamelist (lst : list string) :=
-  match lst with
-  | [] => []
-  | hd::tl => addToNameList hd (mk_addtonamelist tl)
-  end.
-Lemma super_generalize : (forall m lst, sub_check_1 m [] = checkRec m [] -> sub_check_1 m lst = checkRec m (mk_addtonamelist lst)).
-  intros.
-  generalize dependent lst.
-  induction m.
-  simpl.
-  intros.
-  induction lst.
-  simpl.
-  reflexivity.
-  simpl.
-  case (String.eqb a s) eqn:E.
-  rewrite String.eqb_eq in E.
-  rewrite E in*.
-  unfold addToNameList.
-  rewrite <- IHlst.
-  case (is_mem_1 lst s) eqn:E1.
-  apply IHlst.
-  simpl.
-  rewrite String.eqb_refl.
-  reflexivity.
-  rewrite IHlst.
-  unfold addToNameList.
-  case (varExists a (mk_addtonamelist lst)) eqn:E1.
-  reflexivity.
-  simpl.
-  rewrite String.eqb_sym.
-  rewrite E.
-  reflexivity.
-  simpl.
-  intros.
-  rewrite IHm.
-  simpl.
-  reflexivity.
-  simpl in H.
-  Admitted.
-    
-(* Theorem ta1_sol109 : forall m, solution_1 m = sol109 m.
-Proof.
-  unfold solution_1.
-  unfold sol109.
-  intros.
-  induction m.
-  simpl.
-  reflexivity.
-  2:{
-    simpl.
-    rewrite IHm1.
-    rewrite IHm2.
-    reflexivity.
-  }
-  simpl.
-  assert (forall s s0 s1, sub_check_1 m [s1; s0; s] = checkRec m (mk_addtonamelist [s1; s0; s])).
-  {
-    clear s.
-    intros.
-  }
-  rewrite super_generalize.
-  simpl.
-  reflexivity.
-  apply IHm.
-Qed. *)
+
 
 Fixpoint is_connect m :=
 		match m with
@@ -620,5 +555,96 @@ Proof.
 Qed.
 
 
+Fixpoint mk_addtonamelist (lst : list string) :=
+  match lst with
+  | [] => []
+  | hd::tl => addToNameList hd (mk_addtonamelist tl)
+  end.
 
+Theorem ta1_sol109: forall m, solution_1 m = sol109 m.
+Proof.
+  unfold solution_1.
+  unfold sol109.
+  induction m.
+  simpl.
+  reflexivity.
+  simpl.
+  unfold addToNameList.
+  simpl.
+  destruct m.
+  simpl.
+  rewrite String.eqb_sym.
+  reflexivity.
+  simpl.
+  unfold addToNameList.
+  simpl.
+  case (String.eqb s0 s) eqn:E.
+  rewrite String.eqb_eq in E.
+  rewrite E in *.
+  simpl in IHm.
+  unfold addToNameList in IHm.
+  simpl in IHm.
+  rewrite <- IHm.
+  2:{
+    destruct m.
+    simpl.
+    rewrite String.eqb_sym at 1.
+    case (String.eqb s1 s0) eqn:E1.
+    reflexivity.
+    rewrite String.eqb_sym at 1.
+    reflexivity.
+    simpl.
+    simpl in IHm.
+    unfold addToNameList.
+    simpl.
+    unfold addToNameList in IHm.
+    simpl in IHm.
+    case (String.eqb s1 s0) eqn:E1.
+    rewrite String.eqb_eq in E1.
+    rewrite E1 in *.
+    2:{
+      case (String.eqb s1 s) eqn:E2.
+      rewrite String.eqb_eq in E2.
+      rewrite E2 in *.
+      
+    }
+
+  }
+  
+
+
+
+
+
+  
+
+
+(*     
+Theorem ta1_sol109 : forall m, solution_1 m = sol109 m.
+Proof.
+  unfold solution_1.
+  unfold sol109.
+  intros.
+  induction m.
+  simpl.
+  reflexivity.
+  2:{simpl.
+  rewrite IHm1.
+  rewrite IHm2.
+  reflexivity.
+  }
+  simpl.
+  destruct m.
+  simpl.
+  case (String.eqb s s0) eqn:E.
+  rewrite String.eqb_eq in E.
+  rewrite E in *.
+  rewrite String.eqb_refl.
+  reflexivity.
+  rewrite String.eqb_sym in E.
+  rewrite E.
+  reflexivity.
+  simpl.
+  
+Qed. *)
   
