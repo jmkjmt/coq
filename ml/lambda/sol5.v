@@ -77,17 +77,29 @@ Proof.
     reflexivity.
   }
   destruct m.
-  simpl.
-  case (String.eqb s s0) eqn:E.
-  rewrite String.eqb_eq in E.
-  rewrite E in *.
-  rewrite String.eqb_refl.
-  simpl.
-  reflexivity.
-  rewrite String.eqb_sym in E.
-  rewrite E.
-  simpl.
-  reflexivity.
-  simpl.
+  2:{
+    simpl.
+    
+  }
+  assert (filter (fun x : string => negb (x =? s)%string) (getStn m) = mk_filter [s] m).
+  {
+    simpl.
+    reflexivity.
+  }
+  rewrite H.
+  assert (forall m lst, sub_check_1 m lst = match mk_filter lst m with | [] => true | _ => false end).
+  {
+    clear.
+    induction m.
+    simpl.
+    2:{
+      simpl.
+      intros.
+      rewrite sg5_1.
+
+
+    }
+  }
+
   (* synthesize generalize form *)
   Abort.

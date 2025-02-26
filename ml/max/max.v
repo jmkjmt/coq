@@ -38,33 +38,15 @@ Definition sol164 (lst : list Z) : Z :=
 Theorem ta1_sol118: forall lst, ta1 lst = sol118 lst.
 Proof.
     unfold sol118.
-    intros.
     induction lst.
+    simpl.
     reflexivity.
     simpl.
     destruct lst.
+    simpl in *.
     reflexivity.
+    simpl in *.
     rewrite IHlst.
-    simpl.
-    case (loop z lst <? a) eqn:E.
-    case (z >? loop a lst) eqn:E1.
-    destruct lst.
-    simpl in *.
-    Search (_ <? _ = true).
-    rewrite Z.ltb_lt in E.
-    rewrite Z.gtb_gt in E1.
-    Search (_ < _ -> _).
-    apply Z.lt_gt in E.
-    Search (_ > _ -> _).
-    apply Zgt_asym in E1.
-    exfalso.
-    apply E1.
-    apply E.
-    simpl in *.
-    case (z0 >? loop a lst) eqn:E2.
-    
-    
-
     (*  very hard..... *)
     Abort.
 

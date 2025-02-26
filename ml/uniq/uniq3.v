@@ -30,151 +30,21 @@ Fixpoint unique_3 (lst1:list nat) (lst2: list nat) : list nat :=
 
 Definition solution_3 (lst:list nat) : list nat :=
     unique_3 lst nil.
-(*     
-Lemma sg : forall lst1 lst2 a, is_uniq (a::lst2) = true -> a :: remove_elem_1 a (unique_3 lst1 lst2) = unique_3 lst1 (a::lst2).
-Proof.
-    assert (forall lst1 lst2 lst3 a , is_uniq (lst3 ++ a::lst2) = true -> a::remove_elem_1 a (unique_3 (lst3 ++ lst1) lst2 ) = a :: remove_elem_1 a (unique_3 lst1 (lst2 ++ lst3))).
-    {
-        simpl.
-        intros.
-        generalize dependent a.
-        generalize dependent lst2.
-        generalize dependent lst1.
-        induction lst3.
-        simpl.
-        intros.
-        assert (lst2 ++ [] = lst2).
-        {
-            clear.
-            induction lst2.
-            simpl.
-            reflexivity.
-            simpl.
-            rewrite IHlst2.
-            reflexivity.
-        }
-        rewrite H0.
-        reflexivity.
-        simpl.
-        assert (forall lst3 lst2 a a0, all_diff a (lst3 ++ a0::lst2) = true -> is_in_3 lst2 a = false).
-        {
-            clear.
-            induction lst3.
-            simpl.
-            intros.
-            case (a =? a0) eqn:E.
-            discriminate.
-            induction lst2.
-            simpl in *.
-            reflexivity.
-            simpl in *.
-            case (a =? a1) eqn:E1.
-            discriminate.
-            apply IHlst2.
-            apply H.
-            simpl.
-            intros lst2 a0 a1.
-            case (a0 =?a) eqn:E.
-            intros.
-            discriminate.
-            apply IHlst3.
-        }
-        intros lst1 lst2 a0.
-        rewrite H with (a0 := a0) (lst3 := lst3).
-        simpl.
-        intros.
-        assert (lst2 ++ a :: lst3 = (lst2 ++ [a]) ++ lst3).
-        {
-            clear.
-            induction lst2.
-            simpl.
-            reflexivity.
-            simpl.
-            rewrite IHlst2.
-            reflexivity.        
-        }
-        rewrite H1.
-        rewrite IHlst3.
-        reflexivity.
-        assert (forall a lst, is_uniq (a::lst) = is_uniq (lst ++ [a])).
-        {
-            clear.
-            intros.
-            generalize dependent a.
-            induction lst.
-            simpl.
-            reflexivity.
-            simpl in *.
-            intros.
-            rewrite IHlst.
-            case (a0 =? a) eqn:E.
-            rewrite Nat.eqb_eq in E.
-            rewrite E in *.
-            assert (all_diff a (lst ++ [a]) = false).
-            {
-                clear.
-                induction lst.
-                simpl.
-                rewrite Nat.eqb_refl.
-                reflexivity.
-                simpl.
-                rewrite IHlst.
-                case (a =? a0).
-                reflexivity.
-                reflexivity.
-            }
-            rewrite H.
-            reflexivity.
-            rewrite <- IHlst.
-            rewrite <- IHlst.
-            induction lst.
-            simpl.
-            rewrite Nat.eqb_sym in E.
-            rewrite E.
-            reflexivity.
-            simpl.
-            case (a =? a1) eqn: E1.
-            rewrite Nat.eqb_eq in E1.
-            rewrite E1 in *.
-            rewrite E in *.
-            case (is_uniq lst && all_diff a1 lst) eqn:E2.
-            simpl.
-            case (all_diff a0 lst).
-            simpl.
-            reflexivity.
-            reflexivity.
-            reflexivity.
-            case (a0 =? a1) eqn:E2.
-            rewrite Nat.eqb_eq in E2.
-            rewrite E2 in *.
-            case (is_uniq lst && all_diff a1 lst) eqn:E3.
-            simpl.
-            case (all_diff a lst).
-            reflexivity.
-            reflexivity.
-            reflexivity.
+
+    Fixpoint all_diff a lst :=
+match lst with
+| [] => true
+| hd::tl => if a =? hd then false else all_diff a tl
+end.
+
+Fixpoint is_uniq lst :=
+match lst with
+| [] => true
+| hd::tl => if all_diff hd tl then is_uniq tl else false
+end.
 
 
-
-
-
-
-
-
-
-
-
-        }
-
-
-
-    }
-    
-     *)
-
-(* 
-
-Theorem asdf: forall lst: list nat, solution_1 lst = solution_3 lst.
+Theorem eq : forall lst, solution_1 lst = solution_3 lst.
 Proof.
     unfold solution_3.
     induction lst.
@@ -186,39 +56,142 @@ Proof.
     simpl.
     reflexivity.
     simpl.
-    simpl in *.
-    case (n =? a) eqn:E.
-    rewrite Nat.eqb_eq in E.
-    rewrite E in *.
+    case (n =?a)eqn:E.
     2:{
         destruct lst.
         simpl.
-        rewrite Nat.eqb_sym in E.
+        rewrite Nat.eqb_sym.
         rewrite E.
         reflexivity.
         simpl.
         case (n0 =? n) eqn:E1.
-        rewrite Nat.eqb_eq in E1.
-        rewrite E1 in *.
-        rewrite E.
-        simpl in *.
-        rewrite Nat.eqb_refl in *.
         2:{
-            case (n0 =? a) eqn:E2.
+            case(n0 =? a) eqn:E2.
             2:{
-                destruct lst.
-                2:{
+                assert (forall a lst1 lst2, is_uniq (a::lst2) = true -> a::remove_elem_1 a (unique_3 lst1 lst2) = unique_3 lst1 (a::lst2)).
+                {
+                    clear.
+                    intros.
+                    generalize dependent a.
+                    generalize dependent lst2.
+                    induction lst1.
                     simpl.
+                    intros.
+                    assert (remove_elem_1 a lst2 = lst2).
+                    {
+                        induction lst2.
+                        simpl in *.
+                        reflexivity.
+                        simpl in *.
+                        case (a =? a0) eqn:E.
+                        discriminate.
+                        rewrite IHlst2.
+                        reflexivity.
+                        case (all_diff a lst2) eqn:E1.
+                        case (is_uniq lst2) eqn:E2.
+                        reflexivity.
+                        case (all_diff a0 lst2) eqn:E3.
+                        discriminate.
+                        discriminate.
+                        discriminate.
+                    }
+                    rewrite H0.
+                    reflexivity.
+                    1:{
+                        simpl.
+                        intros.
+                        case (is_in_3 lst2 a) eqn:E.
+                        case (a=?a0)eqn:E1.
+                        rewrite Nat.eqb_eq in E1.
+                        rewrite E1 in *.
+                        apply IHlst1.
+                        simpl.
+                        apply H.
+                        apply IHlst1.
+                        simpl.
+                        apply H.
+                        case (a =? a0) eqn:E1.
+                        simpl.
+                        rewrite Nat.eqb_eq in E1.
+                        rewrite E1 in *.
+                        rewrite <- IHlst1.
+                        assert (forall a0 lst1 lst2 lst3, remove_elem_1 a0 (unique_3 lst1 (lst2 ++ [a0]++lst3)) = remove_elem_1 a0 (unique_3 lst1 (lst2 ++ lst3))).
+                        {
+                            clear.
+                            intros.
+                            generalize dependent lst3.
+                            generalize dependent lst2.
+                            generalize dependent a0.
+                            induction lst1.
+                            simpl.
+                            induction lst2.
+                            simpl.
+                            intros.
+                            rewrite Nat.eqb_refl.
+                            reflexivity.
+                            simpl.
+                            intros.
+                            case (a0 =? a) eqn:E.
+                            rewrite Nat.eqb_eq in E.
+                            rewrite E in *.
+                            apply IHlst2.
+                            rewrite IHlst2.
+                            reflexivity.
+                            simpl.
+                            intros.
+                            case (is_in_3 (lst2 ++ a0 ::lst3) a) eqn:E.
+                            case (is_in_3 (lst2 ++ lst3) a) eqn:E1.
+                            apply IHlst1.
+                            simpl.
+                            simpl in IHlst1.
+                            rewrite IHlst1.
+                            assert (a = a0).
+                            {
+                                clear lst1 IHlst1.
+                                generalize dependent lst3.
+                                induction lst2.
+                                simpl in *.
+                                intros.
+                                case (a =? a0) eqn:E2.
+                                rewrite Nat.eqb_eq in E2.
+                                apply E2.
+                                rewrite E1 in E.
+                                discriminate.
+                                simpl.
+                                intros.
+                                case (a =? a1) eqn:E2.
+                                discriminate.
+                                apply IHlst2 with (lst3 := lst3).
+                                apply E.
+                                apply E1.
+                            }
+                            rewrite H in *.
+                            assert (forall a0 lst1 lst2 , is_in_3 (lst2) a0 = false -> remove_elem_1 a0 (unique_3 lst1 lst2) = remove_elem_1 a0 (unique_3 lst1 (lst2 ++[a0]))).
+                            {
+                                clear.
+                                intros.
+                                generalize dependent lst2.
+                                induction lst1.
+                            }
 
-                }     
 
 
 
 
 
 
+
+                        }
+                        
+
+
+                    }
+
+                    
+
+                    
+                }
             }
         }
 
-
-    } *)
+    }

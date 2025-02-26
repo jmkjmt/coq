@@ -27,24 +27,7 @@ Definition solution_1 (lambda:lambda) : bool := sub_check_1 lambda [].
 
 
 Open Scope string_scope.
-Fixpoint valify (string_: string) (covers: lambda) : bool :=
-  match covers with
-  | V n => false
-  | P (n) m_ => if n =? string_ then true else valify string_ m_
-  | C (m1) (m2) => false
-  end.
 
-Fixpoint findStation (cur: lambda) (covers: lambda) : bool :=
-  match cur with
-  | V n => valify n covers
-  | P (n) m_ => findStation m_ (P (n) covers)
-  | C (m1) (m2) => (findStation m1 covers) && (findStation m2 covers)
-  end.
-Fixpoint mk_findstation lst :=
-match lst with
-| [] => V " "
-| hd::tl => P hd (mk_findstation tl)
-end.
 
 Fixpoint deleteAll (list_input : list string) (target : string) : list string :=
 			match list_input with
@@ -72,17 +55,10 @@ Fixpoint mk_deleteAll lst acc :=
   | [] => acc
   end.
 
+  Open Scope list_scope.
 
 Lemma sg57_0 : forall m lst, sub_check_1 m lst = match (mk_deleteAll lst (listStation m)) with | [] => true | _ => false end.
 Proof.
-  assert (forall lst , mk_deleteAll lst [] = []).
-  {
-    induction lst.
-    simpl.
-    reflexivity.
-    simpl.
-    apply IHlst.
-  }
   induction m.
   simpl.
   induction lst.
@@ -92,31 +68,67 @@ Proof.
   case (String.eqb a s) eqn:E.
   rewrite String.eqb_sym in E.
   rewrite E.
-  2:{
-    simpl.
-    rewrite String.eqb_sym in E.
-    rewrite E.
-    apply IHlst.
-  }
-  2:{
-    simpl.
-    assert (forall lst, mk_deleteAll lst (deleteAll (listStation m) s) = mk_deleteAll (s::lst) (listStation m)).
-    {
-      clear.
-      simpl.
-      reflexivity.
-    }
-    intros.
-    rewrite H0.
-    apply IHm.
+  assert (mk_deleteAll lst [] = []).
+  {
+  clear.
+  induction lst.
+  simpl.
+  reflexivity.
+  simpl.
+  apply IHlst.
   }
   rewrite H.
   reflexivity.
+  rewrite String.eqb_sym in E.
+  rewrite E.
+  apply IHlst.
+  simpl.
+  assert (forall m s lst, mk_deleteAll lst (deleteAll (listStation m) s) = mk_deleteAll (s::lst) (listStation m)).
+  {
+    clear.
+    simpl.
+    reflexivity.
+  }
+  intros.
+  rewrite H.
+  apply IHm.
   simpl.
   intros.
   rewrite IHm1.
   rewrite IHm2.
-Abort.
+  assert (forall lst lst1 lst2, mk_deleteAll lst (lst1 ++lst2) = (mk_deleteAll lst lst1) ++ (mk_deleteAll lst lst2) ).
+  {
+    clear.
+    induction lst.
+    simpl.
+    reflexivity.
+    simpl.
+    intros.
+    rewrite <- IHlst.
+    assert (forall a lst1 lst2, deleteAll (lst1++lst2) a = deleteAll lst1 a ++ deleteAll lst2 a).
+    {
+      clear.
+      induction lst1.
+      simpl.
+      reflexivity.
+      simpl.
+      intros.
+      case (String.eqb a0 a) eqn:E.
+      apply IHlst1.
+      simpl.
+      rewrite IHlst1.
+      reflexivity.
+    }
+    rewrite H.
+    reflexivity.
+  }
+  rewrite H.
+  case (mk_deleteAll lst (listStation m1)) eqn:E.
+  simpl.
+  reflexivity.
+  simpl.
+  reflexivity.
+Qed.
 
 Theorem ta1_sol57 : forall m, solution_1 m = sol57 m.
 Proof.
@@ -126,7 +138,20 @@ Proof.
   simpl.
   reflexivity.
   simpl.
-  destruct m.
+  assert (deleteAll (listStation m) s = mk_deleteAll [s] (listStation m)).
+  {
+    clear.
+    simpl.
+    reflexivity.
+  }
+  rewrite H.
+  apply sg57_0.
   simpl.
-  (* synthesize generalize term *)
-  Abort.
+  rewrite IHm1.
+  rewrite IHm2.
+  case (listStation m1) eqn:E.
+  simpl.
+  reflexivity.
+  simpl.
+  reflexivity.
+Qed.

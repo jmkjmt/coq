@@ -83,10 +83,15 @@ Proof.
   simpl.
   unfold addToNameList.
   simpl.
+  2:{
+    simpl.
+    rewrite IHm1.
+    rewrite IHm2.
+    reflexivity.
+  }
   assert (forall m lst, is_uniq lst = true -> sub_check_1 m lst = checkRec m lst).
   {
-    clear.
-    induction m.
+    induction m0.
     simpl.
     induction lst.
     simpl.
@@ -97,32 +102,112 @@ Proof.
     rewrite String.eqb_sym.
     reflexivity.
     case (all_diff a lst) eqn:E.
-    apply H.
+    exact H.
     discriminate.
     simpl.
-    intros.
     unfold addToNameList.
-    case (varExists s lst) eqn:E.
-    rewrite IHm.
-    assert (forall m s lst1 lst2 , varExists s lst2 = true -> checkRec m (lst1 ++ s::lst2) = checkRec m (lst1++lst2)).
+    intros.
+    case (varExists s0 lst) eqn:E.
+    rewrite <- IHm0.
+    2:{
+      exact H.
+    }
+    2:{
+      apply IHm0.
+      simpl.
+      rewrite H.
+      case (all_diff s0 lst) eqn:E1.
+      reflexivity.
+      clear H.
+      induction lst.
+      simpl in *.
+      discriminate.
+      simpl in *.
+      case (s0 =? a) eqn:E2.
+      discriminate.
+      apply IHlst.
+      exact E.
+      exact E1.
+    }
+    2:{
+      simpl.
+      intros.
+      rewrite IHm0_1.
+      rewrite IHm0_2.
+      reflexivity.
+      exact H.
+      exact H.
+    }
+    clear IHm0.
+    clear s.
+    assert (forall lst1 s lst2 m , varExists s lst2 = true -> sub_check_1 m (lst1 ++ [s] ++ lst2) = sub_check_1 m (lst1 ++ lst2)).
     {
       clear.
+      intros.
+      generalize dependent lst2.
+      generalize dependent s.
+      generalize dependent lst1.
       induction m.
       simpl.
       intros.
       induction lst1.
       simpl.
-      case (String.eqb s s0) eqn:E1.
+      case (String.eqb s0 s) eqn:E.
+      rewrite String.eqb_eq in E.
+      rewrite E in *.
+      induction lst2.
+      simpl in *.
+      discriminate.
+      simpl in *.
+      case (s =? a) eqn:E1.
       rewrite String.eqb_eq in E1.
       rewrite E1 in *.
-      rewrite H.
+      rewrite String.eqb_refl.
       reflexivity.
+      rewrite String.eqb_sym in E1.
+      rewrite E1.
+      apply IHlst2.
+      apply H.
       reflexivity.
       simpl.
       rewrite IHlst1.
       reflexivity.
       simpl.
-      unfold addToNameList.
       intros.
-      case (varExists s (lst1 ++ s0 :: lst2)) eqn:E1.    
-Abort.
+      Open Scope list_scope.
+      assert (forall lst3, s::lst1 ++ lst3 = (s::lst1) ++ lst3).
+      {
+        clear.
+        intros.
+        reflexivity.
+      }
+      rewrite H0.
+      rewrite H0.
+      apply IHm.
+      apply H.
+      simpl.
+      intros.
+      simpl in IHm1.
+      simpl in IHm2.
+      rewrite IHm1.
+      rewrite IHm2.
+      reflexivity.
+      apply H.
+      apply H.
+    }
+    assert (s0 :: lst = [] ++ [s0] ++ lst).
+    {
+      simpl.
+      reflexivity.
+    }
+    rewrite H1.
+    rewrite H0.
+    simpl.
+    reflexivity.
+    apply E.    
+  }
+  apply H.
+  simpl.
+  reflexivity.
+Qed.
+  
