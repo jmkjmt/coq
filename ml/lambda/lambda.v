@@ -281,12 +281,7 @@ Proof.
 Qed.
 
 
-Lemma sg5: forall m lst,sub_check_1 m [] = match getStn m with | [] => true | _ => false end -> sub_check_1 m lst = (match mk_filter lst m with | [] => true | _ => false end).
-Proof.
-  induction m.
-  simpl.
 
-Abort.
 
 
 Theorem ta1_sol5 : forall m, solution_1 m = sol5 m.
@@ -460,14 +455,7 @@ Proof.
   intros.
   rewrite IHm1.
   rewrite IHm2.
-  case (mk_deleteAll lst (listStation m1)) eqn:E.
-  simpl.
-  assertt (forall lst2, mk_deleteAll lst (listStation m1) = [] -> mk_deleteAll lst (listStation m1)).
-
-
-
-
-
+Abort.
 
 Theorem ta1_sol57 : forall m, solution_1 m = sol57 m.
 Proof.
@@ -479,27 +467,6 @@ Proof.
   simpl.
   destruct m.
   simpl.
-  2:{
-    simpl.
-
-  }
-
-  2:{
-    simpl.
-    rewrite IHm1.
-    rewrite IHm2.
-    destruct (listStation m1).
-    simpl.
-    reflexivity.
-    simpl.
-    reflexivity.
-  }
-  destruct m.
-  simpl.
-  2:{
-    simpl.
-
-  }
   (* synthesize generalize term *)
   Abort.
 

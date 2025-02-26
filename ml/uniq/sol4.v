@@ -48,12 +48,15 @@ Proof.
     simpl.
     reflexivity.
     simpl.
-    induction lst.
+    rewrite IHlst.
+    destruct lst.
     simpl.
     reflexivity.
     simpl.
-    case (a=?a0) eqn:E.
-    rewrite Nat.eqb_eq in E.
-    rewrite E in *.
+    case (a =? n) eqn:E.
+    2:{
+      
+    }
+
     (* synthesize generalize term *)
     Abort.
