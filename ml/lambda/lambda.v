@@ -107,46 +107,8 @@ Proof.
   rewrite lemma1.
   reflexivity.
   Qed.
-  
-Theorem eq2 : forall (m : lambda), solution_1 m = solution_4 m.
-Proof.
-  assert (lemma1: forall m lst, sub_check_1 m lst = check_4 m lst).
-  {
-    induction m.
-    intros lst.
-    simpl.
-    induction lst.
-    simpl.
-    reflexivity.
-    simpl.
-    case (String.eqb a s) eqn :eq.
-    reflexivity.
-    simpl.
-    rewrite IHlst.
-    reflexivity.
-    intros.
-    simpl.
-    rewrite IHm.
-    reflexivity.
-    simpl.
-    intros.
-    rewrite IHm1.
-    rewrite IHm2.
-    reflexivity.
-  }
-  induction m.
-  unfold solution_1.
-  reflexivity.
-  unfold solution_1.
-  simpl.  
-  apply lemma1.
-  unfold solution_1.
-  simpl.
-  rewrite lemma1.
-  rewrite lemma1.
-  reflexivity.
-Qed.
-Fixpoint mk_lst (v:string) (n:nat) : list string :=
+
+  Fixpoint mk_lst (v:string) (n:nat) : list string :=
   match n with
   | 0 => [v]
   | S n' => v::(mk_lst v n')
@@ -247,6 +209,46 @@ Proof.
   rewrite check_13.
   reflexivity.
 Qed.
+  
+Theorem eq2 : forall (m : lambda), solution_1 m = solution_4 m.
+Proof.
+  assert (lemma1: forall m lst, sub_check_1 m lst = check_4 m lst).
+  {
+    induction m.
+    intros lst.
+    simpl.
+    induction lst.
+    simpl.
+    reflexivity.
+    simpl.
+    case (String.eqb a s) eqn :eq.
+    reflexivity.
+    simpl.
+    rewrite IHlst.
+    reflexivity.
+    intros.
+    simpl.
+    rewrite IHm.
+    reflexivity.
+    simpl.
+    intros.
+    rewrite IHm1.
+    rewrite IHm2.
+    reflexivity.
+  }
+  induction m.
+  unfold solution_1.
+  reflexivity.
+  unfold solution_1.
+  simpl.  
+  apply lemma1.
+  unfold solution_1.
+  simpl.
+  rewrite lemma1.
+  rewrite lemma1.
+  reflexivity.
+Qed.
+
 
 Fixpoint getStn (m: lambda) : list string :=
   match m with
@@ -260,6 +262,33 @@ Definition sol5 (m: lambda) : bool :=
   | [] => true
   | _ => false
   end.
+
+Fixpoint mk_filter lst m :=
+match lst with
+| [] => getStn m
+| hd::tl => filter (fun x => negb (String.eqb x hd)) (mk_filter tl m)
+end.
+(* Lemma sg5_0 : forall x l lst, mk_filter lst (V x) = mk_filter (lst ++ [x]) []. *)
+
+Lemma sg5_1 : forall x l lst, mk_filter lst (P x l) = mk_filter (lst ++ [x]) l.
+Proof.
+  induction lst.
+  simpl.
+  reflexivity.
+  simpl.
+  rewrite IHlst.
+  reflexivity.
+Qed.
+
+
+Lemma sg5: forall m lst,sub_check_1 m [] = match getStn m with | [] => true | _ => false end -> sub_check_1 m lst = (match mk_filter lst m with | [] => true | _ => false end).
+Proof.
+  induction m.
+  simpl.
+
+Abort.
+
+
 Theorem ta1_sol5 : forall m, solution_1 m = sol5 m.
 Proof.
   unfold sol5.
@@ -278,11 +307,12 @@ Proof.
     simpl.
     reflexivity.
   }
-  induction m.
+  destruct m.
   simpl.
   case (String.eqb s s0) eqn:E.
-  rewrite String.eqb_sym in E.
-  rewrite E.
+  rewrite String.eqb_eq in E.
+  rewrite E in *.
+  rewrite String.eqb_refl.
   simpl.
   reflexivity.
   rewrite String.eqb_sym in E.
@@ -306,11 +336,41 @@ Fixpoint findStation (cur: lambda) (covers: lambda) : bool :=
   | P (n) m_ => findStation m_ (P (n) covers)
   | C (m1) (m2) => (findStation m1 covers) && (findStation m2 covers)
   end.
+Fixpoint mk_findstation lst :=
+match lst with
+| [] => V " "
+| hd::tl => P hd (mk_findstation tl)
+end.
 
 Definition sol50 m := findStation m (V (" " : string)).
 
 Theorem ta1_sol50 : forall m, solution_1 m = sol50 m.
 Proof.
+  assert (forall s lst, mk_findstation (s::lst) = P s (mk_findstation lst)).
+    {
+      simpl.
+      reflexivity.
+    }
+  assert (forall m lst, sub_check_1 m lst = findStation m (mk_findstation lst)).
+  {
+    induction m.
+    simpl.
+    induction lst.
+    simpl.
+    reflexivity.
+    simpl.
+    rewrite IHlst.
+    reflexivity.
+    simpl.
+    intros.
+    rewrite <- H.
+    apply IHm.
+    simpl.
+    intros.
+    rewrite IHm1.
+    rewrite IHm2.
+    reflexivity.
+    }
   unfold solution_1.
   unfold sol50.
   induction m.
@@ -325,12 +385,10 @@ Proof.
     reflexivity.
   }
   simpl.
-  induction m.
-  simpl in *.
+  rewrite H0.
+  simpl.
   reflexivity.
-  simpl in *.
-  (* synthesize generalize term *)
-  Abort.
+Qed.
   
 Fixpoint deleteAll (list_input : list string) (target : string) : list string :=
 			match list_input with
@@ -352,14 +410,80 @@ Definition sol57 (lambda_input : lambda) :=
   | _ => false
   end.
 
+Fixpoint mk_deleteAll lst acc :=
+  match lst with
+  | hd::tl => mk_deleteAll tl (deleteAll acc hd)
+  | [] => acc
+  end.
+
+
+Lemma sg57_0 : forall m lst, sub_check_1 m lst = match (mk_deleteAll lst (listStation m)) with | [] => true | _ => false end.
+Proof.
+  assert (forall lst , mk_deleteAll lst [] = []).
+  {
+    induction lst.
+    simpl.
+    reflexivity.
+    simpl.
+    apply IHlst.
+  }
+  induction m.
+  simpl.
+  induction lst.
+  simpl.
+  reflexivity.
+  simpl.
+  case (String.eqb a s) eqn:E.
+  rewrite String.eqb_sym in E.
+  rewrite E.
+  2:{
+    simpl.
+    rewrite String.eqb_sym in E.
+    rewrite E.
+    apply IHlst.
+  }
+  2:{
+    simpl.
+    assert (forall lst, mk_deleteAll lst (deleteAll (listStation m) s) = mk_deleteAll (s::lst) (listStation m)).
+    {
+      clear.
+      simpl.
+      reflexivity.
+    }
+    intros.
+    rewrite H0.
+    apply IHm.
+  }
+  rewrite H.
+  reflexivity.
+  simpl.
+  intros.
+  rewrite IHm1.
+  rewrite IHm2.
+  case (mk_deleteAll lst (listStation m1)) eqn:E.
+  simpl.
+  assertt (forall lst2, mk_deleteAll lst (listStation m1) = [] -> mk_deleteAll lst (listStation m1)).
+
+
+
+
+
+
 Theorem ta1_sol57 : forall m, solution_1 m = sol57 m.
 Proof.
   unfold solution_1.
   unfold sol57.
-  intros.
   induction m.
   simpl.
   reflexivity.
+  simpl.
+  destruct m.
+  simpl.
+  2:{
+    simpl.
+
+  }
+
   2:{
     simpl.
     rewrite IHm1.
@@ -370,19 +494,13 @@ Proof.
     simpl.
     reflexivity.
   }
+  destruct m.
   simpl.
-  induction m.
-  simpl.
-  case (s =? s0) eqn:E.
-  rewrite String.eqb_eq in E.
-  rewrite E in *.
-  rewrite String.eqb_refl.
-  reflexivity.
-  rewrite String.eqb_sym in E.
-  rewrite E.
-  reflexivity.
-  simpl.
-  (* syn thesize generalize term *)
+  2:{
+    simpl.
+
+  }
+  (* synthesize generalize term *)
   Abort.
 
 Fixpoint check_ (m:lambda) (al : list string) (nl : list string) : bool :=
@@ -493,66 +611,7 @@ Fixpoint check (m: lambda) : bool :=
     end
   end. *)
 
-Fixpoint ck (l:lambda) (lst : list string) : nat :=
-match l with
-|P va e => ck e (va::lst)
-|C ex1 ex2 => ck ex1 lst + ck ex2 lst
-|V (va) => if (is_mem_1 lst va) then 0 else 1 
-end.
 
-Definition sol530 (l:lambda) : bool :=  
-   Nat.eqb (ck l []) 0 .
-
-Theorem ta1_sol530 : forall m, solution_1 m = sol530 m.
-Proof.
-  assert (forall n1 n2, (andb (Nat.eqb n1 0)  (Nat.eqb n2 0)) =  Nat.eqb (n1 + n2) 0 ).
-    {
-      clear.
-      induction n1.
-      simpl.
-      intros.
-      reflexivity.
-      simpl.
-      reflexivity.
-    }
-  assert (forall m lst, sub_check_1 m lst  = (Nat.eqb (ck m lst) 0)).
-  {
-    induction m.
-    simpl.
-    induction lst.
-    simpl.
-    reflexivity.
-    simpl.
-    case (String.eqb a s) eqn:E.
-    simpl.
-    reflexivity.
-    simpl.
-    rewrite IHlst at 1.
-    reflexivity.
-    simpl.
-    intros.
-    rewrite IHm.
-    reflexivity.
-    simpl.
-    intros.
-    rewrite IHm1.
-    rewrite IHm2.
-    rewrite H.
-    reflexivity.    
-  }
-  unfold sol530.
-  unfold solution_1.
-  induction m.
-  simpl.
-  reflexivity.
-  simpl.
-  apply H0.
-  simpl.
-  rewrite IHm1.
-  rewrite IHm2.
-  rewrite H.
-  reflexivity.
-Qed.
 
 
 Fixpoint mk_addtonamelist (lst : list string) :=
@@ -561,6 +620,18 @@ Fixpoint mk_addtonamelist (lst : list string) :=
   | hd::tl => addToNameList hd (mk_addtonamelist tl)
   end.
 
+
+Fixpoint all_diff (v:string) (l:list string) : bool :=
+  match l with
+  | [] => true
+  | hd::tl => if String.eqb v hd then false else all_diff v tl
+  end.
+
+  Fixpoint is_uniq lst :=
+  match lst with
+  | [] => true
+  | hd::tl => if all_diff hd tl then is_uniq tl else false
+  end.
 Theorem ta1_sol109: forall m, solution_1 m = sol109 m.
 Proof.
   unfold solution_1.
@@ -571,55 +642,141 @@ Proof.
   simpl.
   unfold addToNameList.
   simpl.
-  destruct m.
+  assert (forall m lst, is_uniq lst = true -> sub_check_1 m lst = checkRec m lst).
+  {
+    clear.
+    induction m.
+    simpl.
+    induction lst.
+    simpl.
+    reflexivity.
+    simpl.
+    intros.
+    rewrite IHlst.
+    rewrite String.eqb_sym.
+    reflexivity.
+    case (all_diff a lst) eqn:E.
+    apply H.
+    discriminate.
+    simpl.
+    intros.
+    unfold addToNameList.
+    case (varExists s lst) eqn:E.
+    rewrite IHm.
+    assert (forall m s lst1 lst2 , varExists s lst2 = true -> checkRec m (lst1 ++ s::lst2) = checkRec m (lst1++lst2)).
+    {
+      clear.
+      induction m.
+      simpl.
+      intros.
+      induction lst1.
+      simpl.
+      case (String.eqb s s0) eqn:E1.
+      rewrite String.eqb_eq in E1.
+      rewrite E1 in *.
+      rewrite H.
+      reflexivity.
+      reflexivity.
+      simpl.
+      rewrite IHlst1.
+      reflexivity.
+      simpl.
+      unfold addToNameList.
+      intros.
+      case (varExists s (lst1 ++ s0 :: lst2)) eqn:E1.    
+Abort.
+  
+
+
+  Fixpoint ck (l:lambda) (lst : list string) : nat :=
+  match l with
+  |P va e => ck e (va::lst)
+  |C ex1 ex2 => ck ex1 lst + ck ex2 lst
+  |V (va) => if (is_mem_1 lst va) then 0 else 1 
+  end.
+  
+  Definition sol530 (l:lambda) : bool :=  
+     Nat.eqb (ck l []) 0 .
+  
+  Theorem ta1_sol530 : forall m, solution_1 m = sol530 m.
+  Proof.
+    assert (forall n1 n2, (andb (Nat.eqb n1 0)  (Nat.eqb n2 0)) =  Nat.eqb (n1 + n2) 0 ).
+      {
+        clear.
+        induction n1.
+        simpl.
+        intros.
+        reflexivity.
+        simpl.
+        reflexivity.
+      }
+    assert (forall m lst, sub_check_1 m lst  = (Nat.eqb (ck m lst) 0)).
+    {
+      induction m.
+      simpl.
+      induction lst.
+      simpl.
+      reflexivity.
+      simpl.
+      case (String.eqb a s) eqn:E.
+      simpl.
+      reflexivity.
+      simpl.
+      rewrite IHlst at 1.
+      reflexivity.
+      simpl.
+      intros.
+      rewrite IHm.
+      reflexivity.
+      simpl.
+      intros.
+      rewrite IHm1.
+      rewrite IHm2.
+      rewrite H.
+      reflexivity.    
+    }
+    unfold sol530.
+    unfold solution_1.
+    induction m.
+    simpl.
+    reflexivity.
+    simpl.
+    apply H0.
+    simpl.
+    rewrite IHm1.
+    rewrite IHm2.
+    rewrite H.
+    reflexivity.
+  Qed.
+
+
+  
+Lemma sg109: forall m lst, sub_check_1 m lst = checkRec m (mk_addtonamelist lst).
+Proof.
+  induction m.
   simpl.
-  rewrite String.eqb_sym.
+  induction lst.
+  simpl.
   reflexivity.
   simpl.
-  unfold addToNameList.
-  simpl.
-  case (String.eqb s0 s) eqn:E.
+  case (String.eqb a s) eqn:E.
   rewrite String.eqb_eq in E.
   rewrite E in *.
-  simpl in IHm.
-  unfold addToNameList in IHm.
-  simpl in IHm.
-  rewrite <- IHm.
-  2:{
-    destruct m.
-    simpl.
-    rewrite String.eqb_sym at 1.
-    case (String.eqb s1 s0) eqn:E1.
-    reflexivity.
-    rewrite String.eqb_sym at 1.
-    reflexivity.
-    simpl.
-    simpl in IHm.
-    unfold addToNameList.
-    simpl.
-    unfold addToNameList in IHm.
-    simpl in IHm.
-    case (String.eqb s1 s0) eqn:E1.
-    rewrite String.eqb_eq in E1.
-    rewrite E1 in *.
-    2:{
-      case (String.eqb s1 s) eqn:E2.
-      rewrite String.eqb_eq in E2.
-      rewrite E2 in *.
-      
-    }
+  unfold addToNameList.
+  case (varExists s (mk_addtonamelist lst)) eqn:E1.
+  rewrite E1.
+  reflexivity.
+  simpl.
+  rewrite String.eqb_refl.
+  reflexivity.
+  rewrite IHlst.
+  assert 
 
-  }
-  
+Abort.
 
 
 
-
-
-  
-
-
-(*     
+    
 Theorem ta1_sol109 : forall m, solution_1 m = sol109 m.
 Proof.
   unfold solution_1.
@@ -646,5 +803,5 @@ Proof.
   reflexivity.
   simpl.
   
-Qed. *)
+Qed.
   
