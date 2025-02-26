@@ -25,7 +25,11 @@ end.
 
 Definition solution_1 (lambda:lambda) : bool := sub_check_1 lambda [].
 
-
+Fixpoint mem st li :=
+match li with
+| nil => false
+| hd::tl => if String.eqb hd st then true else mem st tl
+end.
 
 Fixpoint check_3 (ma: lambda) (li:list string) : bool :=
   match ma with
