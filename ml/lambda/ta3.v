@@ -62,18 +62,29 @@ simpl.
 intros.
 case (mem s lst) eqn:E.
 rewrite <- IHm.
-(*    
-induction m.
-simpl.
-case (String.eqb v v0)eqn:E1.
-rewrite String.eqb_eq in E1.
-rewrite E1 in *.
-rewrite <- E.
-rewrite mem13.
-reflexivity.
-reflexivity.
-simpl.
-*)
+
+assert (forall m v lst, mem v lst = true -> sub_check_1 m (v::lst) = sub_check_1 m lst).
+{
+  clear.
+  induction m.
+  simpl.
+  intros.
+  case (String.eqb v s) eqn:E.
+  rewrite mem13.
+  rewrite String.eqb_eq in E.
+  rewrite E in *.
+  rewrite H.
+  reflexivity.
+  reflexivity.
+  simpl.
+  intros.
+  
+
+
+
+}
+
+
 assert (forall m v lst1 lst2, mem v lst1 = true -> sub_check_1 m (lst2++ v::lst1) = sub_check_1 m (lst2++lst1)).
 {
   clear.
@@ -138,6 +149,8 @@ Proof.
 unfold solution_1.
 unfold solution_3.
 intros.
+
+
 rewrite check_13.
 reflexivity.
 Qed.

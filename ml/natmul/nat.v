@@ -84,6 +84,7 @@ Fixpoint sol32_sub (a b c : nat) : nat :=
 Definition sol32 (n1 n2 : nat) : nat :=
   sol32_sub n1 0 n2.
 
+
 Program Fixpoint add_sol6 (n1 n2 :nat) {measure 0} : nat :=
 match n1 with
 |0 => n2
@@ -677,3 +678,19 @@ Proof.
   rewrite H.
   reflexivity.
 Qed.
+
+Theorem ta1_sol32 : forall n1 n2, natmul1 n1 n2 = sol32 n1 n2.
+Proof.
+  unfold sol32.
+  induction n1.
+  simpl.
+  reflexivity.
+  simpl.
+  induction n2.
+  simpl.
+  rewrite IHn1.
+  reflexivity.
+  simpl.
+  
+  
+
